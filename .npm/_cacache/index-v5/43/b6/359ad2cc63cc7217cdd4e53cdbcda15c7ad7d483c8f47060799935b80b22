@@ -1,0 +1,2 @@
+
+144ea1e324ab78082fc475bd578b22c2299511d1	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/@stdlib/complex-float32/-/complex-float32-0.0.7.tgz","integrity":"sha512-POCtQcBZnPm4IrFmTujSaprR1fcOFr/MRw2Mt7INF4oed6b1nzeG647K+2tk1m4mMrMPiuXCdvwJod4kJ0SXxQ==","time":1772509715633,"size":13704,"metadata":{"time":1772509713225,"url":"https://bnpm.byted.org/@stdlib/complex-float32/-/complex-float32-0.0.7.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

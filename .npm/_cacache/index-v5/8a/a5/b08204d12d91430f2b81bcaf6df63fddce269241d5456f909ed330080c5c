@@ -1,0 +1,2 @@
+
+5f9ab5001cf8c895a96d64d70fb3c96acaeea25f	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/express/-/express-5.2.1.tgz","integrity":"sha512-hIS4idWWai69NezIdRt2xFVofaF4j+6INOpJlVOLDO8zXGpUVEVzIYk12UUi2JzjEzWL3IOAxcTubgz9Po0yXw==","time":1772509715704,"size":22560,"metadata":{"time":1772509713352,"url":"https://bnpm.byted.org/express/-/express-5.2.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

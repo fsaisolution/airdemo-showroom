@@ -1,0 +1,2 @@
+
+80d53f6f850aa81d2a0fadb7652582c5406722c6	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/strip-ansi/-/strip-ansi-6.0.1.tgz","integrity":"sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==","time":1772509711596,"size":2041,"metadata":{"time":1772509711561,"url":"https://bnpm.byted.org/strip-ansi/-/strip-ansi-6.0.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:31 GMT"},"options":{"compress":true}}}

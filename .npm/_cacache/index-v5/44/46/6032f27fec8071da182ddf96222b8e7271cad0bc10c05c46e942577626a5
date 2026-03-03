@@ -1,0 +1,2 @@
+
+75dc1b420ff875ecdc6d692b32631626954297c0	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/@stdlib/process-read-stdin/-/process-read-stdin-0.0.7.tgz","integrity":"sha512-nep9QZ5iDGrRtrZM2+pYAvyCiYG4HfO0/9+19BiLJepjgYq4GKeumPAQo22+1xawYDL7Zu62uWzYszaVZcXuyw==","time":1772509715415,"size":10754,"metadata":{"time":1772509713103,"url":"https://bnpm.byted.org/@stdlib/process-read-stdin/-/process-read-stdin-0.0.7.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

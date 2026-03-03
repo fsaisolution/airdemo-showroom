@@ -1,0 +1,2 @@
+
+ea5407a6468fcfad9f5b86e86a51735bac2ec9f0	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/router/-/router-2.2.0.tgz","integrity":"sha512-nLTrUKm2UyiL7rlhapu/Zl45FwNgkZGaCpZbIHajDYgwlJCOzLSk+cIPAnsEqV955GjILJnKbdQC1nVPz+gAYQ==","time":1772509714979,"size":14251,"metadata":{"time":1772509712749,"url":"https://bnpm.byted.org/router/-/router-2.2.0.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:32 GMT"},"options":{"compress":true}}}

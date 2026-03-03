@@ -1,0 +1,18 @@
+{
+  "sso.bytedance.com": {
+    "access_token": {
+      "Name": "access_token",
+      "Value": "d063d34f78d2e8bb7c377911cf7a6c2fe9044691",
+      "Path": "",
+      "Domain": "sso.bytedance.com",
+      "Expires": "2026-04-02T11:54:52.184597+08:00",
+      "RawExpires": "",
+      "MaxAge": 0,
+      "Secure": false,
+      "HttpOnly": false,
+      "SameSite": 0,
+      "Raw": "",
+      "Unparsed": null
+    }
+  }
+}

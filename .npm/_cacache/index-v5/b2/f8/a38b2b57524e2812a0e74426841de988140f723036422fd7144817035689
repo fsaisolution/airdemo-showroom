@@ -1,0 +1,2 @@
+
+071eecb77d130806dfd3fc89dad81ab6f10f13cf	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/@stdlib/assert-is-buffer/-/assert-is-buffer-0.0.8.tgz","integrity":"sha512-SYmGwOXkzZVidqUyY1IIx6V6QnSL36v3Lcwj8Rvne/fuW0bU2OomsEBzYCFMvcNgtY71vOvgZ9VfH3OppvV6eA==","time":1772509715242,"size":9585,"metadata":{"time":1772509713031,"url":"https://bnpm.byted.org/@stdlib/assert-is-buffer/-/assert-is-buffer-0.0.8.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

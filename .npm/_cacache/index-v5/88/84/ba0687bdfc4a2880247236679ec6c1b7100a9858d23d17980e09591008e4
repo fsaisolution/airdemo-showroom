@@ -1,0 +1,2 @@
+
+991fb19d1dbd3bbaf08aa47780561b9f2e1ee095	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/agent-base/-/agent-base-6.0.2.tgz","integrity":"sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==","time":1772509714826,"size":9273,"metadata":{"time":1772509712605,"url":"https://bnpm.byted.org/agent-base/-/agent-base-6.0.2.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:32 GMT"},"options":{"compress":true}}}

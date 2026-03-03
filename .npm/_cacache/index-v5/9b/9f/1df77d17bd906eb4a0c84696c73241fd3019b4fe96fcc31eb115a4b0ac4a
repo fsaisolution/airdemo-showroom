@@ -1,0 +1,2 @@
+
+e8912d5ed500117d2ee9f5dfb56dfd161d05bd21	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/google-protobuf/-/google-protobuf-3.21.4.tgz","integrity":"sha512-MnG7N936zcKTco4Jd2PX2U96Kf9PxygAPKBug+74LHzmHXmceN16MmRcdgZv+DGef/S9YvQAfRsNCn4cjf9yyQ==","time":1772509717054,"size":68046,"metadata":{"time":1772509713942,"url":"https://bnpm.byted.org/google-protobuf/-/google-protobuf-3.21.4.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

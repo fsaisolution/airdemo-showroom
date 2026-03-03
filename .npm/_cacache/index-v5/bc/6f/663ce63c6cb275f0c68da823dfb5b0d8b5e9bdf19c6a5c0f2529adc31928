@@ -1,0 +1,2 @@
+
+b97562b243c6720a19a6e8eef75369d10b512bb0	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/undici-types/-/undici-types-7.18.2.tgz","integrity":"sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==","time":1772509715482,"size":27712,"metadata":{"time":1772509712990,"url":"https://bnpm.byted.org/undici-types/-/undici-types-7.18.2.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:32 GMT"},"options":{"compress":true}}}

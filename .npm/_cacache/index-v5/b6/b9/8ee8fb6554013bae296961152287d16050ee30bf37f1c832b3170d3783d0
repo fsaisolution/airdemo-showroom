@@ -1,0 +1,2 @@
+
+5356cbc981e378be7c2856cb193bbe7577451c19	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/own-keys/-/own-keys-1.0.1.tgz","integrity":"sha512-qFOyK5PjiWZd+QQIh+1jhdb9LpxTF0qs7Pm8o5QHYZ0M3vKqSqzsZaEB6oWlxZ+q2sJBMI/Ktgd2N5ZwQoRHfg==","time":1772509712935,"size":4464,"metadata":{"time":1772509711793,"url":"https://bnpm.byted.org/own-keys/-/own-keys-1.0.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:31 GMT"},"options":{"compress":true}}}

@@ -1,0 +1,2 @@
+
+fadbf69265e27436c14c133d83481c9f491568dc	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/is-array-buffer/-/is-array-buffer-3.0.5.tgz","integrity":"sha512-DDfANUiiG2wC1qawP66qlTugJeL5HyzMpfr8lLK+jMQirGzNod0B12cFB/9q838Ru27sBwfw78/rdoU7RERz6A==","time":1772509712877,"size":6323,"metadata":{"time":1772509711827,"url":"https://bnpm.byted.org/is-array-buffer/-/is-array-buffer-3.0.5.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:31 GMT"},"options":{"compress":true}}}

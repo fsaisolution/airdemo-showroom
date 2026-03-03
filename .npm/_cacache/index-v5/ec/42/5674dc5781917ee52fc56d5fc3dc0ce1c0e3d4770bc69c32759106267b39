@@ -1,0 +1,2 @@
+
+5622e52718ec9e34eef479585cdec382d2858cf4	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/http-proxy-agent/-/http-proxy-agent-4.0.1.tgz","integrity":"sha512-k0zdNgqWTGA6aeIRVpvfVob4fL52dTfaehylg0Y4UvSySvOq/Y+BOyPrgpUrA7HylqvU8vIZGsRuXmspskV0Tg==","time":1772509715647,"size":5834,"metadata":{"time":1772509713910,"url":"https://bnpm.byted.org/http-proxy-agent/-/http-proxy-agent-4.0.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

@@ -1,0 +1,2 @@
+
+2c7ef3e4e08c4bdc07ca5d3ca64346bb691341c2	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/@byted-nodex/logger-core/-/logger-core-1.1.6.tgz","integrity":"sha512-iobaWzqR6i+e4ISY39FSqH3n8vZIBmQ8erdwwCbhZ/+UBxr+Y2vcg9M3CyJJfj60OMMPhvqbmGKcArvOO5SYEw==","time":1772509715689,"size":9200,"metadata":{"time":1772509713795,"url":"https://bnpm.byted.org/@byted-nodex/logger-core/-/logger-core-1.1.6.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

@@ -1,0 +1,2 @@
+
+793022691b117acc7016a3e15af949cd949add58	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/is-number-object/-/is-number-object-1.1.1.tgz","integrity":"sha512-lZhclumE1G6VYD8VHe35wFaIif+CTy5SJIi5+3y4psDgWu4wPDoBhF8NxUOinEc7pHgiTsT6MaBb92rKhhD+Xw==","time":1772509711726,"size":8796,"metadata":{"time":1772509711611,"url":"https://bnpm.byted.org/is-number-object/-/is-number-object-1.1.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:31 GMT"},"options":{"compress":true}}}

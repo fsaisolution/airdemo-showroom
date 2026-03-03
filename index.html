@@ -35,35 +35,32 @@
     </script>
     <style>
         :root {
-            /* Feishu Dark Theme Tokens */
+            /* Feishu Light Theme Tokens (Default) */
+            --bg: #F5F6F7; /* Page background - Light Gray */
+            --bg-body: #F5F6F7;
+            --bg-subtle: #EBEDF0;
+            --bg-surface-1: #FFFFFF; /* Card background - White */
+            --bg-surface-2: #F5F6F7; /* Hover/Secondary background */
+            --bg-surface-3: #EBEDF0;
+            --bg-surface-4: #DEE0E3;
             
-            /* Backgrounds */
-            --bg: #141414; /* bg-app */
-            --bg-body: var(--bg);
-            --bg-subtle: #1F1F1F; /* bg-surface-1 */
-            --bg-surface-1: #1F1F1F;
-            --bg-surface-2: #2B2B2B;
-            --bg-surface-3: #373737;
-            --bg-surface-4: #484848;
-            
-            /* Mapped Surfaces for Compatibility */
             --surface: var(--bg-surface-1);
             --surface-strong: var(--bg-surface-2);
             
             /* Borders */
-            --border: #333333; /* border-subtle */
-            --border-subtle: #333333;
-            --border-strong: #484848;
+            --border: #DEE0E3;
+            --border-subtle: #DEE0E3;
+            --border-strong: #C9CDD4;
             --border-active: #3370FF;
             
             /* Typography */
-            --text: #FFFFFF; /* fg-primary */
-            --text-2: #EBEBEB; /* fg-secondary */
-            --text-3: #A6A6A6; /* fg-tertiary */
-            --text-disabled: #5F5F5F; /* fg-disabled */
+            --text: #1F2329; /* Primary text */
+            --text-2: #646A73; /* Secondary text */
+            --text-3: #8F959E; /* Tertiary text */
+            --text-disabled: #BBBFC4;
             
             /* Brand / Accent */
-            --primary: #3370FF; /* Feishu Blue */
+            --primary: #3370FF;
             --primary-hover: #4C83FF;
             --primary-pressed: #245ADB;
             --primary-subtle: rgba(51, 112, 255, 0.1);
@@ -77,45 +74,45 @@
             /* Spacing & Radius */
             --radius-xs: 2px;
             --radius-sm: 4px;
-            --radius-md: 8px; /* Slightly softer */
-            --radius-lg: 12px; /* More modern, softer corners */
-            --radius-xl: 16px;
+            --radius-md: 6px; /* Feishu standard is often 4px or 6px for small elements */
+            --radius-lg: 8px; /* Cards, Buttons */
+            --radius-xl: 12px;
             
-            /* Shadows - Softer, more diffuse for "quiet luxury" */
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
+            /* Shadows */
+            --shadow-sm: 0 2px 8px rgba(31, 35, 41, 0.04);
+            --shadow-md: 0 4px 12px rgba(31, 35, 41, 0.08);
+            --shadow-lg: 0 8px 24px rgba(31, 35, 41, 0.12);
             
             /* Animation */
             --fast: 200ms;
             --base: 300ms;
             --slow: 500ms;
-            --ease: cubic-bezier(0.34, 0.69, 0.1, 1); /* Feishu-like ease */
+            --ease: cubic-bezier(0.34, 0.69, 0.1, 1);
             --ring: 0 0 0 2px rgba(51, 112, 255, 0.2);
         }
 
-        .light-theme {
-            /* Feishu Light Theme Tokens */
-            --bg: #FFFFFF;
-            --bg-body: #FFFFFF;
-            --bg-subtle: #F5F6F7;
-            --bg-surface-1: #FFFFFF;
-            --bg-surface-2: #F5F6F7;
-            --bg-surface-3: #EBEDF0;
-            --bg-surface-4: #DEE0E3;
+        .dark-theme {
+            /* Feishu Dark Theme Tokens */
+            --bg: #141414;
+            --bg-body: #141414;
+            --bg-subtle: #1F1F1F;
+            --bg-surface-1: #1F1F1F;
+            --bg-surface-2: #2B2B2B;
+            --bg-surface-3: #373737;
+            --bg-surface-4: #484848;
             
             --surface: var(--bg-surface-1);
             --surface-strong: var(--bg-surface-2);
             
-            --border: #DEE0E3;
-            --border-subtle: #DEE0E3;
-            --border-strong: #C9CDD4;
+            --border: #333333;
+            --border-subtle: #333333;
+            --border-strong: #484848;
             --border-active: #3370FF;
             
-            --text: #1F2329;
-            --text-2: #646A73;
-            --text-3: #8F959E;
-            --text-disabled: #BBBFC4;
+            --text: #FFFFFF;
+            --text-2: #EBEBEB;
+            --text-3: #A6A6A6;
+            --text-disabled: #5F5F5F;
             
             --primary: #3370FF;
             --primary-hover: #4C83FF;
@@ -127,10 +124,9 @@
             --success: #30B566;
             --warning: #FF8800;
             
-            /* Softer shadows for light mode */
-            --shadow-sm: 0 2px 8px rgba(31, 35, 41, 0.02);
-            --shadow-md: 0 8px 24px rgba(31, 35, 41, 0.04);
-            --shadow-lg: 0 16px 48px rgba(31, 35, 41, 0.06);
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
         }
 
         body {
@@ -160,8 +156,8 @@
 
         .ui-card {
             background: var(--bg-surface-1);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-xl);
+            border: 0.5px solid var(--border);
+            border-radius: 8px;
             box-shadow: var(--shadow-sm);
             transition: box-shadow var(--base) var(--ease), transform var(--base) var(--ease), border-color var(--base) var(--ease);
         }
@@ -170,6 +166,7 @@
             border-color: var(--border-strong);
             background: var(--bg-surface-2);
             transform: translateY(-2px);
+            cursor: pointer;
         }
 
         .ui-divider { height: 1px; background: var(--border); }
@@ -254,7 +251,9 @@
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
+        .animate-slideDown { animation: slideDown 0.25s ease-out; }
         .no-scrollbar::-webkit-scrollbar { width: 0; height: 0; display: none; }
         .no-scrollbar::-webkit-scrollbar-thumb { background: transparent; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -264,16 +263,6 @@
             .animate-fadeIn { animation: none; }
         }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
-  }
-}
-</script>
 </head>
 <body class="feishu-bg overflow-hidden">
     <div id="root"></div>

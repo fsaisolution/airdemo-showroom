@@ -1,0 +1,2 @@
+
+d48b5dd92dbf81ef229c99e885d3e147cd343b61	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/lodash.isinteger/-/lodash.isinteger-4.0.4.tgz","integrity":"sha512-DBwtEWN2caHQ9/imiNeEA5ys1JoRtRfY3d7V9wkqtbycnAmTvRRmbHKDV4a0EYc678/dia0jrte4tjYwVBaZUA==","time":1772509714646,"size":3464,"metadata":{"time":1772509712349,"url":"https://bnpm.byted.org/lodash.isinteger/-/lodash.isinteger-4.0.4.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:32 GMT"},"options":{"compress":true}}}

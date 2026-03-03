@@ -13,6 +13,10 @@
     "@google/genai": "^1.34.0",
     "@larksuiteoapi/node-sdk": "^1.56.0",
     "@tailwindcss/vite": "^4.1.18",
+    "@universe-design/icons-react": "^3.252.0",
+    "@universe-design/react": "^3.28.4",
+    "@universe-design/react-provider": "^0.6.0",
+    "@universe-design/styles": "^11.19.0",
     "clsx": "^2.1.1",
     "gsap": "^3.14.2",
     "lucide-react": "^0.562.0",
@@ -23,14 +27,16 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@byted/mcp-proxy": "^1.3.11",
     "@types/node": "^22.14.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mammoth": "^1.11.0",
     "terser": "^5.44.1",
     "typescript": "~5.8.2",
-    "vite": "^6.2.0",
-    "vite-plugin-compression": "^0.5.1",
     "vercel": "^50.1.3",
-    "express": "^4.21.2",
-    "dotenv": "^16.4.7"
+    "vite": "^6.2.0",
+    "vite-plugin-compression": "^0.5.1"
   }
 }

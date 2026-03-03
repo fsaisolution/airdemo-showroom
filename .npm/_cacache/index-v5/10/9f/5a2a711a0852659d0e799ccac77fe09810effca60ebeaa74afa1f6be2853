@@ -1,0 +1,2 @@
+
+d1c543a089769960ee37157ddad10ee563fa4303	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/jsonwebtoken/-/jsonwebtoken-8.5.1.tgz","integrity":"sha512-XjwVfRS6jTMsqYs0EsuJ4LGxXV14zQybNd4L2r0UvbVnSF9Af8x7p5MzbJ90Ioz/9TI41/hTCvznF/loiSzn8w==","time":1772509715856,"size":21515,"metadata":{"time":1772509714024,"url":"https://bnpm.byted.org/jsonwebtoken/-/jsonwebtoken-8.5.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:34 GMT"},"options":{"compress":true}}}

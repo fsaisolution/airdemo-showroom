@@ -21,7 +21,7 @@ spec:
       - name: cstc-registry-secret
       containers:
       - name: airdemo
-        image: cstc-cr-prd-cn-beijing.cr.volces.com/cstc-tools/airdemo:20260127-amd64
+        image: cstc-cr-prd-cn-beijing.cr.volces.com/cstc-tools/airdemo:20260128-new-demos-v3
         imagePullPolicy: Always
         ports:
         - containerPort: 80

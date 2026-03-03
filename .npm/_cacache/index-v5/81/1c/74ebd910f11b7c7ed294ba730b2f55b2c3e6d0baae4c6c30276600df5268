@@ -1,0 +1,2 @@
+
+d3d5fdbfe361f99dc64d07fb8965fe3b2dcd9a77	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/@byted-service/fetch-core/-/fetch-core-2.6.3.tgz","integrity":"sha512-HrxJjQNUEE4q2xAy2jhEwVc05UMD2cFA2R5mXj7hb4Np03ezicF+sJesJKzBS2uyIUSIeYfYqBptT79UoGrUkA==","time":1772509715657,"size":12382,"metadata":{"time":1772509713983,"url":"https://bnpm.byted.org/@byted-service/fetch-core/-/fetch-core-2.6.3.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:34 GMT"},"options":{"compress":true}}}

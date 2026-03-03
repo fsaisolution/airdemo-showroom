@@ -1,0 +1,2 @@
+
+d2f8958bfb51ff82532b001d28f61826f34282d9	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/is-symbol/-/is-symbol-1.1.1.tgz","integrity":"sha512-9gGx6GTtCQM73BgmHQXfDmLtfjjTUDSyoxTCbp5WtoixAhfgsDirWIcVQ/IHpvI5Vgd5i/J5F7B9cN/WlVbC/w==","time":1772509712135,"size":9572,"metadata":{"time":1772509711759,"url":"https://bnpm.byted.org/is-symbol/-/is-symbol-1.1.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:31 GMT"},"options":{"compress":true}}}

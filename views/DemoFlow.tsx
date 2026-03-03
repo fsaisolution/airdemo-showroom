@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { Button, Tag } from '@universe-design/react';
 import { Demo } from '../types';
 import { ArrowRight, Camera, Brain, CheckSquare, MessageSquare, Monitor, Play } from 'lucide-react';
 
@@ -320,9 +321,11 @@ const DemoFlow: React.FC<DemoFlowProps> = ({ demo, onEnterApp }) => {
       {!isRightPanelOpen && (
            <button
              onClick={() => setIsRightPanelOpen(true)}
-             className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 ui-btn ui-btn-secondary h-10 px-5 text-xs font-semibold"
+             className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20"
            >
-             打开流程说明
+             <Button type="secondary" size="medium">
+               打开流程说明
+             </Button>
            </button>
          )}
       
@@ -332,7 +335,7 @@ const DemoFlow: React.FC<DemoFlowProps> = ({ demo, onEnterApp }) => {
            {/* Header */}
            <div className="h-16 border-b border-[color:var(--border)] flex items-center justify-between px-4 md:px-6">
               <div className="flex items-center gap-2">
-                <span className="ui-tag px-2 py-0.5 text-[10px] bg-[color:var(--bg-surface-2)] text-[color:var(--text-3)] border-[color:var(--border)]">Flow</span>
+                <Tag color="neutral" size="small">Flow</Tag>
                 <h3 className="text-sm font-bold text-[color:var(--text)] whitespace-nowrap">业务流程编排</h3>
               </div>
            </div>
@@ -397,22 +400,27 @@ const DemoFlow: React.FC<DemoFlowProps> = ({ demo, onEnterApp }) => {
 
         {/* Footer Actions */}
         <div className="p-6 border-t border-[color:var(--border)] bg-[color:var(--bg-surface-1)]">
-           <button 
+           <Button 
+             type="primary"
+             size="large"
+             block
              onClick={onEnterApp}
-             className="w-full ui-btn ui-btn-primary h-12 text-sm shadow-lg shadow-[color:var(--primary)]/20 hover:shadow-[color:var(--primary)]/30 transition-all transform active:scale-95 flex items-center justify-center gap-2 text-white"
+             icon={<Play size={16} />}
            >
-             <Play size={16} />
              进入应用
-           </button>
+           </Button>
            <p className="text-center mt-3 text-[10px] text-[color:var(--text-3)]">
              点击即可进入应用模式体验真实交互
            </p>
-           <button
+           <Button
+             type="secondary"
+             size="medium"
+             block
              onClick={() => setIsRightPanelOpen(false)}
-             className="w-full mt-4 ui-btn ui-btn-secondary h-10 text-xs"
+             className="mt-4"
            >
              收起流程说明
-           </button>
+           </Button>
         </div>
       </div>
       )}

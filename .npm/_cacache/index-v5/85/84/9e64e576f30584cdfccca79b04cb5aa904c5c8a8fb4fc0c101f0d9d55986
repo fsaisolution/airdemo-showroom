@@ -1,0 +1,2 @@
+
+f22d147ef1c02329901e194fd06d2609cb7d0861	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/node-unix-socket/-/node-unix-socket-0.2.7.tgz","integrity":"sha512-Gzdi/wcz0Dd0IPkzl8OfSGmOm3uMMOvOl2yWVyE3E5hdl3tI+0lUVwYc92UnZWt5rWhrkqLBoUivzLVipCoO2w==","time":1772509715673,"size":13866,"metadata":{"time":1772509713722,"url":"https://bnpm.byted.org/node-unix-socket/-/node-unix-socket-0.2.7.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

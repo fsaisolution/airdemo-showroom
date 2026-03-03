@@ -1,0 +1,2 @@
+
+4d4ec6ff63d0a1054c66cf488fd864e741937b21	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/@byted-service/logagent/-/logagent-1.8.7.tgz","integrity":"sha512-ahzqe6eoLcgq5J1ya5SHqwm65joqdPOJkA+sDf0oozzL/xKjvxBsW7uVjzMDnmESSt0RCkYGM0CncirLwnJTlw==","time":1772509715665,"size":15289,"metadata":{"time":1772509713632,"url":"https://bnpm.byted.org/@byted-service/logagent/-/logagent-1.8.7.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

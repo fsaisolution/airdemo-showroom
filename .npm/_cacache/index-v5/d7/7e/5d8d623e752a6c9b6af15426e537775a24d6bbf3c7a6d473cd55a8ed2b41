@@ -1,0 +1,2 @@
+
+1bc4faebc15d622bf29584c857ca1b5bac3e6513	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/emoji-regex/-/emoji-regex-8.0.0.tgz","integrity":"sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==","time":1772509711597,"size":6664,"metadata":{"time":1772509711568,"url":"https://bnpm.byted.org/emoji-regex/-/emoji-regex-8.0.0.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:31 GMT"},"options":{"compress":true}}}

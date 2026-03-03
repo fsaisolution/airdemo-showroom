@@ -1,0 +1,2 @@
+
+fc1d72ea3f471651ed9164ddaf5970e58028cb87	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/@byted-service/logid/-/logid-1.1.1.tgz","integrity":"sha512-Gj5j6v1sRkXRG4ZoDL/+BdGVFFiHYo/evLSq5s1d10kZAW045HqwRdky9zYsPz9yV6MGyuxtBvcWTGhLmipmGA==","time":1772509715648,"size":3362,"metadata":{"time":1772509713916,"url":"https://bnpm.byted.org/@byted-service/logid/-/logid-1.1.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

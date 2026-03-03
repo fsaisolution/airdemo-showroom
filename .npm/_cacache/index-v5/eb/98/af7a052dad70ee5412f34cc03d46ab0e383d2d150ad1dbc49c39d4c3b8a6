@@ -1,0 +1,2 @@
+
+eda6c20ba5d40cb8bfd6e0becf80e2ba95deaba1	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/zod-to-json-schema/-/zod-to-json-schema-3.25.1.tgz","integrity":"sha512-pM/SU9d3YAggzi6MtR4h7ruuQlqKtad8e9S0fmxcMi+ueAK5Korys/aWcV9LIIHTVbj01NdzxcnXSN+O74ZIVA==","time":1772509715697,"size":46288,"metadata":{"time":1772509713309,"url":"https://bnpm.byted.org/zod-to-json-schema/-/zod-to-json-schema-3.25.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

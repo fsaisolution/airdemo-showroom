@@ -1,0 +1,2 @@
+
+2fabf277d6cedf2c7744c2912b1ae9aa207623a8	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/data-view-byte-offset/-/data-view-byte-offset-1.0.1.tgz","integrity":"sha512-BS8PfmtDGnrgYdOonGZQdLZslWIeCGFP9tpan0hi1Co2Zr2NKADsvGYA8XxuG/4UWgJ6Cjtv+YJnB6MM69QGlQ==","time":1772509714585,"size":4779,"metadata":{"time":1772509712236,"url":"https://bnpm.byted.org/data-view-byte-offset/-/data-view-byte-offset-1.0.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:31 GMT"},"options":{"compress":true}}}

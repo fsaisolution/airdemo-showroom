@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Prism from '../components/Prism';
 import Loading from '../components/Loading';
 import { GoogleGenAI } from "@google/genai";
 import { BusinessContext, Demo } from '../types';
@@ -954,24 +953,35 @@ const Workspace: React.FC<WorkspaceProps> = ({ demo, currentApp, initialView }) 
             </div>
 
             <div className="p-4 sm:p-6 border-t border-[color:var(--border)] bg-[color:var(--bg-surface-1)]">
-              <div className="relative">
-                <input
-                  type="text"
-                  disabled={isAilyThinking}
+              <div className="relative flex items-end gap-2">
+                <textarea
                   placeholder="向 Aily 提问业务现状..."
-                  className="w-full h-11 pl-4 pr-12 text-sm bg-[color:var(--bg-surface-2)] border border-[color:var(--border)] rounded-[var(--radius-md)] focus:outline-none focus:ring-2 focus:ring-[color:var(--primary)]/20 focus:border-[color:var(--primary)] transition-all placeholder:text-[color:var(--text-3)] text-[color:var(--text)]"
+                  disabled={isAilyThinking}
+                  rows={1}
+                  className="w-full min-h-[44px] max-h-[200px] text-sm bg-[color:var(--bg-surface-2)] border border-[color:var(--border)] rounded-[var(--radius-md)] focus:ring-2 focus:ring-[color:var(--primary)]/20 focus:border-[color:var(--primary)] transition-all resize-none p-3"
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      const input = e.currentTarget;
-                      if (!input.value || isAilyThinking) return;
-                      const text = input.value;
-                      setMessages(prev => [...prev, { role: 'user', text }]);
-                      input.value = '';
-                      askGemini(text);
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      const value = e.currentTarget.value.trim();
+                      if (!value || isAilyThinking) return;
+                      setMessages(prev => [...prev, { role: 'user', text: value }]);
+                      askGemini(value);
+                      e.currentTarget.value = '';
                     }
                   }}
                 />
-                <button className="absolute right-2 top-2 bottom-2 w-10 h-10 min-w-[44px] min-h-[44px] flex items-center justify-center text-[color:var(--text-3)] hover:text-[color:var(--text)] hover:bg-[color:var(--bg-surface-3)] rounded-[var(--radius-sm)] transition-all active:scale-95" disabled={isAilyThinking}>
+                <button
+                  className="flex-shrink-0 p-3 bg-[color:var(--primary)] text-white rounded-[var(--radius-md)] hover:opacity-90 disabled:opacity-50 transition-opacity"
+                  disabled={isAilyThinking}
+                  onClick={(e) => {
+                    const textarea = e.currentTarget.previousSibling as HTMLTextAreaElement;
+                    const value = textarea.value.trim();
+                    if (!value || isAilyThinking) return;
+                    setMessages(prev => [...prev, { role: 'user', text: value }]);
+                    askGemini(value);
+                    textarea.value = '';
+                  }}
+                >
                   <Send size={18} />
                 </button>
               </div>

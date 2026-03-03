@@ -1,0 +1,2 @@
+
+fa2abd6b4689291c3f49576f491d41a4d43bb43e	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/sonic-boom/-/sonic-boom-1.4.1.tgz","integrity":"sha512-LRHh/A8tpW7ru89lrlkU4AszXt1dbwSjVWguGrmlxE7tawVmDBlI1PILMkXAxJTwqhgsEeTHzj36D5CmHgQmNg==","time":1772509715727,"size":8511,"metadata":{"time":1772509714161,"url":"https://bnpm.byted.org/sonic-boom/-/sonic-boom-1.4.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:34 GMT"},"options":{"compress":true}}}

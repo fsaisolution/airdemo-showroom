@@ -20,22 +20,31 @@ export interface Demo {
   valueProp: string;
   url?: string;
   cover?: string;
-  points: string[];
-  audience: string;
-  steps: DemoStep[];
-  mainTable: any[];
+  points?: string[];
+  audience?: string;
+  steps: { 
+    id: string | number; 
+    title: string; 
+    desc?: string;
+    component?: string;
+    script?: string;
+    value?: string;
+    fallback?: string;
+  }[];
+  mainTable?: any[];
   secondaryTable?: any[];
   secondaryTables?: {
     management?: any[];
     equipment?: any[];
     factory?: any[];
   };
-  aiInsights: {
+  aiInsights?: {
     conclusion: string;
     risks: string[];
     actions: string[];
     next: string;
   };
+  isPlaceholder?: boolean;
 }
 
 export interface BotCard {

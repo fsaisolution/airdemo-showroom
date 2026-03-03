@@ -1,0 +1,2 @@
+
+0b915e418c9a6b50fd3fe1b93431bafc0ee70038	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/jose/-/jose-6.1.3.tgz","integrity":"sha512-0TpaTfihd4QMNwrz/ob2Bp7X04yuxJkjRGi4aKmOqwhov54i6u79oCv7T+C7lo70MKH6BesI3vscD1yb/yzKXQ==","time":1772509715804,"size":49751,"metadata":{"time":1772509713772,"url":"https://bnpm.byted.org/jose/-/jose-6.1.3.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}

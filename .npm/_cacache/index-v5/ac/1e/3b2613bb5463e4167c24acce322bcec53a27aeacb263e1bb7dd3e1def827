@@ -1,0 +1,2 @@
+
+d5a537b4b9b0107507b54cb4da41f506ae156006	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/ansi-regex/-/ansi-regex-5.0.1.tgz","integrity":"sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==","time":1772509711596,"size":2768,"metadata":{"time":1772509711560,"url":"https://bnpm.byted.org/ansi-regex/-/ansi-regex-5.0.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:31 GMT"},"options":{"compress":true}}}

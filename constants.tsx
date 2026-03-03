@@ -4,8 +4,8 @@ import { BusinessContext, Demo } from './types';
 const INSPECTION_IMAGE = "https://files.imagetourl.net/uploads/1766244783700-c685ecaa-ae04-455d-b39d-91ac6ab7d54a.png";
 const MECHANICAL_IMAGE = "https://files.imagetourl.net/uploads/1766245759016-b1a82b7e-adc4-438c-84b4-d4e95790c2d1.png";
 const EQUIPMENT_IMAGE = "https://files.imagetourl.net/uploads/1766248925406-a7bffe6f-cd74-4605-8298-5a197f13b881.png";
-export const INSPECTION_COVER_URL = "https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/%E6%88%AA%E5%B1%8F2025-12-24%20%E4%B8%8B%E5%8D%886.50.56.png";
-export const GTM_COVER_URL = "https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/%E6%88%AA%E5%B1%8F2025-12-24%20%E4%B8%8B%E5%8D%883.35.20.png";
+export const INSPECTION_COVER_URL = "/images/img1/智能巡检.png";
+export const GTM_COVER_URL = "/images/img1/gtm.png";
 
 export const PROMPT_TEMPLATES: BusinessContext[] = [
   {
@@ -254,7 +254,7 @@ export const DEMO_LIST: Demo[] = [
   {
     id: '3d-packing',
     title: '智能3D装箱模拟器',
-    cover: '/images/装箱助手配图.png',
+    cover: '/images/img1/智能装箱.png',
     valueProp: '基于AI算法的智能装箱方案，提高装载率，降低物流成本',
     points: ['订单自动优化', '3D可视化装箱', '装载率实时计算'],
     audience: '物流经理 / 仓储主管 / 供应链负责人',
@@ -275,8 +275,8 @@ export const DEMO_LIST: Demo[] = [
   },
   {
     id: 'chain-manual-assistant',
-    title: '东华链条手册识别助手',
-    cover: '/images/东华链条手册识别助手.png',
+    title: '手册识别助手',
+    cover: '/images/img1/手册识别.png',
     valueProp: '快速、准确地检索手册知识，替代传统的人工翻阅方式，提升知识获取效率',
     points: ['RAG 检索增强', 'OCR 图文解析', '一站式知识获取'],
     audience: '工程师 / 技术人员 / 售后支持',
@@ -296,8 +296,8 @@ export const DEMO_LIST: Demo[] = [
   },
   {
     id: 'gaodun-exam-assistant',
-    title: '高顿教育出题助手',
-    cover: '/images/高顿出题例图.png',
+    title: 'CFA出题助手',
+    cover: '/images/img1/出题.png',
     valueProp: '围绕CFA/FRM教材考纲，模仿课后题风格自动出题，提升教研效率',
     points: ['考纲精准匹配', '课后题风格模仿', '自动解析生成'],
     audience: '教研人员 / 培训讲师 / 课程设计师',
@@ -385,7 +385,7 @@ export const EFFICIENCY_TOOLS = [
     avatarUrl: '',
     url: 'https://bytedance.larkoffice.com/app/V3ODb8WGMazgV8skMzacVeKhnyd?pageId=pgespYNABKPJQ572',
     skills: ['会议全生命周期管理', 'AI智能待办提取', '任务可视化派发', '多维度进度跟踪', '任务进度实时获取'],
-    highlight: '36 条日志',
+    highlight: '通过 AI 工具（如 Aily）能够实现会议全生命周期管理，AI 智能待办提取，任务可视化派发，多维度进度跟踪，任务进度实时获取，替代传统的会议管理方式，提升会议效率和任务落地率。',
     docUrl: '#',
     videoUrl: '#'
   }

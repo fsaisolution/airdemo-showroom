@@ -1,0 +1,2 @@
+
+dd6ed55291abc89d10b8165ced544310c02320cd	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/is-finalizationregistry/-/is-finalizationregistry-1.1.1.tgz","integrity":"sha512-1pC6N8qWJbWoPtEjgcL2xyhQOP491EQjeUo3qTKcmV8YSDDJrOepfG8pcC7h/QgnQHYSv0mJ3Z/ZWxmatVrysg==","time":1772509711769,"size":6315,"metadata":{"time":1772509711625,"url":"https://bnpm.byted.org/is-finalizationregistry/-/is-finalizationregistry-1.1.1.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:31 GMT"},"options":{"compress":true}}}

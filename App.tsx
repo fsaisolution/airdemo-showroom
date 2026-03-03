@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, memo } from 'react';
+import React, { useState, useEffect, useRef, memo, useMemo } from 'react';
 import { 
   LayoutGrid, 
   MessageSquare, 
@@ -17,9 +17,12 @@ import {
   Zap,
   Clock,
   ArrowUpRight,
-  ScanLine
+  ScanLine,
+  User
 } from 'lucide-react';
-import { DEMO_LIST, EFFICIENCY_TOOLS, PROMPT_TEMPLATES, INSPECTION_COVER_URL, GTM_COVER_URL } from './constants';
+import { Card, Tag } from '@universe-design/react';
+import { StarThinkingAnimation } from '@universe-design/react-x/ai';
+import { EFFICIENCY_TOOLS, PROMPT_TEMPLATES, INSPECTION_COVER_URL, GTM_COVER_URL, DEMO_LIST } from './constants';
 import Catalog from './views/Catalog';
 import Workspace from './views/Workspace';
 import DemoFlow from './views/DemoFlow';
@@ -42,24 +45,31 @@ type Message = {
 const renderRichText = (text: string) => {
   let processedText = text;
   
-  processedText = processedText.replace(/\*\*(.*?)\*\*/g, '<strong class="text-base font-semibold text-[color:var(--text)]">$1</strong>');
-  processedText = processedText.replace(/\*(.*?)\*/g, '<em class="text-[color:var(--text-2)]">$1</em>');
-  processedText = processedText.replace(/`(.*?)`/g, '<code class="bg-[color:var(--bg-surface-2)] px-1.5 py-0.5 rounded text-xs font-mono text-[color:var(--primary)] border border-[color:var(--border)]">$1</code>');
+  processedText = processedText.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-[color:var(--text)]">$1</strong>');
+  processedText = processedText.replace(/\*(.+?)\*/g, '<em class="italic text-[color:var(--text-2)]">$1</em>');
+  processedText = processedText.replace(/`([^`]+)`/g, '<code class="bg-[color:var(--bg-surface-2)] px-1.5 py-0.5 rounded text-xs font-mono text-[color:var(--primary)] border border-[color:var(--border)]">$1</code>');
   
   const urlRegex = /(https?:\/\/[^\s\)]+)/g;
-  processedText = processedText.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-[color:var(--primary)] hover:text-[color:var(--primary-hover)] underline font-medium">$1</a>');
+  processedText = processedText.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-[color:var(--primary)] hover:text-[color:var(--primary-hover)] underline">$1</a>');
   
-  processedText = processedText.replace(/^### (.+)$/gm, '<h3 class="text-sm font-semibold text-[color:var(--text)] mt-3 mb-2 border-l-2 border-[color:var(--primary)] pl-2">$1</h3>');
+  processedText = processedText.replace(/^#### (.+)$/gm, '<h4 class="text-xs font-semibold text-[color:var(--text)] mt-3 mb-1">$1</h4>');
+  processedText = processedText.replace(/^### (.+)$/gm, '<h3 class="text-sm font-semibold text-[color:var(--text)] mt-4 mb-2 border-l-2 border-[color:var(--primary)] pl-2">$1</h3>');
   processedText = processedText.replace(/^## (.+)$/gm, '<h2 class="text-base font-bold text-[color:var(--text)] mt-4 mb-2">$1</h2>');
-  processedText = processedText.replace(/^# (.+)$/gm, '<h1 class="text-lg font-bold text-[color:var(--text)] mt-4 mb-2">$1</h1>');
+  processedText = processedText.replace(/^# (.+)$/gm, '<h1 class="text-lg font-bold text-[color:var(--text)] mt-3 mb-2">$1</h1>');
   
-  processedText = processedText.replace(/^- (.+)$/gm, '<li class="text-xs text-[color:var(--text-2)] ml-4 mb-1">$1</li>');
-  processedText = processedText.replace(/^(\d+)\. (.+)$/gm, '<li class="text-xs text-[color:var(--text-2)] ml-4 mb-1"><span class="font-medium text-[color:var(--text)]">$1.</span> $2</li>');
+  processedText = processedText.replace(/^> (.+)$/gm, '<blockquote class="border-l-2 border-[color:var(--primary)] pl-3 py-1 my-2 text-xs text-[color:var(--text-2)] bg-[color:var(--bg-surface-2)] rounded-r">$1</blockquote>');
   
-  processedText = processedText.replace(/\n\n/g, '</p><p class="text-xs text-[color:var(--text-2)] leading-relaxed mb-2">');
+  processedText = processedText.replace(/^- \[x\] (.+)$/gm, '<li class="flex items-start gap-2 text-xs text-[color:var(--text-2)] ml-2 mb-1"><span class="text-[color:var(--primary)]">✓</span><span>$1</span></li>');
+  processedText = processedText.replace(/^- \[ \] (.+)$/gm, '<li class="flex items-start gap-2 text-xs text-[color:var(--text-2)] ml-2 mb-1"><span class="text-[color:var(--text-3)]">○</span><span>$1</span></li>');
+  processedText = processedText.replace(/^- (.+)$/gm, '<li class="flex items-start gap-2 text-xs text-[color:var(--text-2)] ml-2 mb-1"><span class="text-[color:var(--primary)] mt-0.5">•</span><span>$1</span></li>');
+  processedText = processedText.replace(/^(\d+)\. (.+)$/gm, '<li class="flex items-start gap-2 text-xs text-[color:var(--text-2)] ml-2 mb-1"><span class="font-medium text-[color:var(--text)] min-w-[16px]">$1.</span><span>$2</span></li>');
+  
+  processedText = processedText.replace(/^---$/gm, '<hr class="border-[color:var(--border)] my-3" />');
+  
+  processedText = processedText.replace(/\n\n+/g, '</div><div class="mb-2">');
   processedText = processedText.replace(/\n/g, '<br/>');
   
-  processedText = '<p class="text-xs text-[color:var(--text-2)] leading-relaxed mb-2">' + processedText + '</p>';
+  processedText = '<div class="text-xs leading-relaxed text-[color:var(--text-2)]">' + processedText + '</div>';
   
   return processedText;
 };
@@ -72,11 +82,45 @@ const App: React.FC = () => {
   const [currentApp, setCurrentApp] = useState<AppId>('home');
   const [workspaceInitialView, setWorkspaceInitialView] = useState<WorkspaceViewId>('main');
   const [demoViewMode, setDemoViewMode] = useState<'flow' | 'workspace'>('flow');
-  const [homeMessages, setHomeMessages] = useState<Message[]>([{ role: 'ai', text: '你好，我是首页 AI 助手。想先看探探 / 睿睿 / 巡检哪个？' }]);
+  const [homeMessages, setHomeMessages] = useState<Message[]>([{ role: 'ai', text: '你好，我是首页 AI 助手。想先看探探 / 蕊蕊 / 巡检哪个？' }]);
   const [homeInput, setHomeInput] = useState('');
   const [isHomeChatCollapsed, setIsHomeChatCollapsed] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHomeChatLoading, setIsHomeChatLoading] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredDemos = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const query = searchQuery.trim().toLowerCase();
+    return DEMO_LIST.filter(d => {
+      if (d.isPlaceholder) return false;
+      return (
+        d.title.toLowerCase().includes(query) ||
+        d.valueProp.toLowerCase().includes(query) ||
+        (d.points && d.points.some(p => p.toLowerCase().includes(query))) ||
+        (d.audience && d.audience.toLowerCase().includes(query)) ||
+        (d.steps && d.steps.some(s => 
+          s.title.toLowerCase().includes(query) || 
+          (s.script && s.script.toLowerCase().includes(query)) || 
+          (s.value && s.value.toLowerCase().includes(query)) ||
+          (s.component && s.component.toLowerCase().includes(query)) ||
+          (s.fallback && s.fallback.toLowerCase().includes(query))
+        ))
+      );
+    });
+  }, [searchQuery]);
+
+  const filteredTools = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const query = searchQuery.trim().toLowerCase();
+    return EFFICIENCY_TOOLS.filter(t => 
+      t.title.toLowerCase().includes(query) || 
+      t.name.toLowerCase().includes(query) || 
+      (t.skills && t.skills.some(s => s.toLowerCase().includes(query))) ||
+      (t.highlight && t.highlight.toLowerCase().includes(query))
+    );
+  }, [searchQuery]);
 
   const handleGoHome = () => {
     setSelectedDemo(null);
@@ -100,7 +144,7 @@ const App: React.FC = () => {
     const lower = t.toLowerCase();
     if (!t) return '我这边没听清，可以再具体一点吗？';
     if (t.includes('探探') || lower.includes('tantan')) return '探探适合做互动式客户调研，自动生成调研总结，先把关注点收敛。';
-    if (t.includes('睿睿') || lower.includes('ruirui')) return '睿睿适合做汇报复盘：金句、干系人洞察、故事线及案例推荐。';
+    if (t.includes('蕊蕊') || lower.includes('ruirui')) return '蕊蕊适合做汇报复盘：金句、干系人洞察、故事线及案例推荐。';
     if (t.includes('巡检') || t.includes('智能巡检') || lower.includes('inspection')) return '可以直接点击首页里的「AI 智能巡检」卡片进入演示，我会帮你讲完闭环。';
     if (t.includes('推荐') || t.includes('怎么选')) return '你可以告诉我 行业 / 角色 / 当前最大痛点，我帮你选一条最合适的 Demo 路线。';
     return '收到。如果你愿意，也可以直接从首页卡片进入「最新 Demo」或「最新数字伙伴」。';
@@ -159,6 +203,7 @@ const App: React.FC = () => {
     { id: 'efficiency', name: '数字伙伴', icon: <img src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/ChatGPT%20Image%202025%E5%B9%B412%E6%9C%8825%E6%97%A5%2014_31_37%201.png" alt="数字伙伴" className="w-4 h-4 object-contain" loading="lazy" /> }
   ];
 
+
   const handleToolbarNavigate = (id: string) => {
     if (id === 'inspection') {
       const demo = DEMO_LIST.find(d => d.id === 'inspection');
@@ -211,53 +256,6 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          {/* 桌面端导航菜单 */}
-          <nav className="hidden lg:flex items-center gap-1 ml-2 lg:ml-8 overflow-x-auto no-scrollbar">
-            {apps.map(app => (
-              <button
-                key={app.id}
-                onClick={() => {
-                  if (app.id === 'home') {
-                    handleGoHome();
-                    return;
-                  }
-                  if (app.id === 'efficiency' && selectedDemo) {
-                     setDemoViewMode('workspace');
-                  }
-                  if (app.id === 'demo') {
-                    setSelectedDemo(null);
-                  }
-                  setCurrentApp(app.id);
-                }}
-                className={`relative px-4 h-10 text-[14px] whitespace-nowrap flex-shrink-0 rounded-lg font-medium transition-all duration-150 ${
-                  currentApp === app.id 
-                    ? 'text-[color:var(--primary)] bg-[color:var(--primary)]/10' 
-                    : 'text-[color:var(--text-2)] hover:text-[color:var(--text)] hover:bg-[color:var(--bg-surface-2)]'
-                }`}
-              >
-                <span className="flex items-center gap-2">
-                  {app.icon}
-                  {app.name}
-                </span>
-                {currentApp === app.id && (
-                  <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-[color:var(--primary)] rounded-full" />
-                )}
-              </button>
-            ))}
-
-            <div className="w-px h-5 bg-[color:var(--border)] mx-2" />
-
-            <a
-              href={AI_NAVIGATOR_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="relative px-4 h-10 text-[14px] whitespace-nowrap flex-shrink-0 rounded-lg font-medium transition-all duration-150 text-[color:var(--text-2)] hover:text-[color:var(--text)] hover:bg-[color:var(--bg-surface-2)] flex items-center gap-2"
-            >
-              <img src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/ChatGPT%20Image%202025%E5%B9%B412%E6%9C%8825%E6%97%A5%2014_36_28%201.png" alt="AI领航者" className="w-4 h-4 object-contain" loading="lazy" />
-              AI领航者
-            </a>
-          </nav>
-
           {/* 移动端汉堡菜单按钮 */}
           <button
             className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[color:var(--bg-surface-2)] transition-colors ml-auto"
@@ -304,24 +302,142 @@ const App: React.FC = () => {
           <div className="w-px h-5 bg-[color:var(--border)] mx-3"></div>
 
           <div className="flex items-center gap-1">
-            <button className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[color:var(--bg-surface-2)] transition-colors">
+            <button 
+              onClick={handleGoHome}
+              className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[color:var(--bg-surface-2)] transition-colors"
+              title="返回首页"
+            >
+              <svg className="w-5 h-5 text-[color:var(--text-2)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+            </button>
+            <button 
+              onClick={() => setIsSearchOpen(true)}
+              className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[color:var(--bg-surface-2)] transition-colors"
+            >
               <Search className="w-5 h-5 text-[color:var(--text-2)]" />
             </button>
-            <button className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[color:var(--bg-surface-2)] transition-colors">
-              <Settings className="w-5 h-5 text-[color:var(--text-2)]" />
-            </button>
             <div className="w-px h-5 bg-[color:var(--border)] mx-1"></div>
-            <button className="flex items-center justify-center w-8 h-8 rounded-full overflow-hidden hover:ring-2 hover:ring-[color:var(--primary)] hover:ring-offset-2 hover:ring-offset-[color:var(--bg-surface-1)] transition-all">
-              <img 
-                src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/ChatGPT%20Image%202025%E5%B9%B412%E6%9C%8825%E6%97%A5%2014_32_47%201.png" 
-                alt="用户头像" 
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
+            <button className="flex items-center justify-center w-8 h-8 rounded-full bg-[color:var(--bg-surface-2)] text-[color:var(--text-2)] hover:bg-[color:var(--bg-surface-3)] hover:text-[color:var(--text)] transition-colors border border-[color:var(--border)]">
+              <User size={16} />
             </button>
           </div>
         </div>
       </header>
+
+      {/* 全局搜索弹窗 */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4">
+          <div 
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsSearchOpen(false)}
+          />
+          <div className="relative w-full max-w-2xl bg-[color:var(--bg-surface-1)] rounded-lg shadow-2xl border border-[color:var(--border)] overflow-hidden flex flex-col animate-slideDown">
+            <div className="flex items-center px-4 py-3 border-b border-[color:var(--border)] gap-3">
+              <Search className="w-5 h-5 text-[color:var(--text-3)]" />
+              <input 
+                type="text" 
+                placeholder="搜索方案、工具或功能..." 
+                className="flex-1 bg-transparent text-[14px] text-[color:var(--text)] placeholder-[color:var(--text-3)] outline-none h-6"
+                autoFocus
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <button 
+                onClick={() => setIsSearchOpen(false)}
+                className="px-2 py-1 text-[12px] bg-[color:var(--bg-surface-2)] text-[color:var(--text-2)] rounded border border-[color:var(--border)] hover:bg-[color:var(--bg-surface-3)]"
+              >
+                ESC
+              </button>
+            </div>
+            
+            <div className="max-h-[60vh] overflow-y-auto p-2">
+              {!searchQuery && (
+                <div className="p-4 text-center text-[color:var(--text-3)] text-[13px]">
+                  输入关键词搜索...
+                </div>
+              )}
+              
+              {searchQuery && (
+                <div className="space-y-1">
+                  {/* Demo 搜索结果 */}
+                  {filteredDemos.map(demo => (
+                    <div 
+                      key={demo.id}
+                      onClick={() => {
+                        setWorkspaceInitialView('main');
+                        setSelectedDemo(demo);
+                        setCurrentApp('demo');
+                        setDemoViewMode('flow');
+                        setIsSearchOpen(false);
+                      }}
+                      className="flex items-center gap-3 p-3 hover:bg-[color:var(--bg-surface-2)] rounded-md cursor-pointer group"
+                    >
+                      <div className="w-8 h-8 rounded bg-[color:var(--bg-surface-3)] flex items-center justify-center text-[color:var(--text-2)]">
+                        <LayoutGrid size={16} />
+                      </div>
+                      <div>
+                        <div className="text-[13px] font-medium text-[color:var(--text)] flex items-center gap-2">
+                          {demo.title}
+                          <span className="px-1.5 py-0.5 rounded-full bg-[color:var(--primary)]/10 text-[color:var(--primary)] text-[10px]">Demo</span>
+                        </div>
+                        <div className="text-[11px] text-[color:var(--text-3)]">{demo.valueProp}</div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* 工具搜索结果 */}
+                  {filteredTools.map(tool => (
+                    <div 
+                      key={tool.id}
+                      onClick={() => {
+                        window.open(tool.url, '_blank');
+                        setIsSearchOpen(false);
+                      }}
+                      className="flex items-center gap-3 p-3 hover:bg-[color:var(--bg-surface-2)] rounded-md cursor-pointer group"
+                    >
+                      <div className="w-8 h-8 rounded bg-[color:var(--bg-surface-3)] flex items-center justify-center text-[color:var(--text-2)]">
+                        <Zap size={16} />
+                      </div>
+                      <div>
+                        <div className="text-[13px] font-medium text-[color:var(--text)] flex items-center gap-2">
+                          {tool.title}
+                          <span className="px-1.5 py-0.5 rounded-full bg-orange-100 text-orange-600 text-[10px]">工具</span>
+                        </div>
+                        <div className="text-[11px] text-[color:var(--text-3)]">{tool.name}</div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* 无结果提示 */}
+                  {filteredDemos.length === 0 && 
+                   filteredTools.length === 0 && (
+                    <div className="p-8 text-center text-[color:var(--text-3)] text-[13px]">
+                      未找到相关内容
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            {/* 快捷键提示 */}
+            {!searchQuery && (
+              <div className="px-4 py-3 border-t border-[color:var(--border)] bg-[color:var(--bg-surface-2)]">
+                <div className="flex items-center gap-4 text-[11px] text-[color:var(--text-3)]">
+                  <span className="flex items-center gap-1">
+                    <LayoutGrid size={12} />
+                    搜索 Demo
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Zap size={12} />
+                    搜索工具
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* 移动端菜单遮罩 */}
       {isMobileMenuOpen && (
@@ -416,81 +532,51 @@ const App: React.FC = () => {
             <div className="flex-1 overflow-y-auto no-scrollbar p-6 lg:p-8 pb-24 lg:pb-12">
               <div className="max-w-[1440px] mx-auto space-y-8 lg:space-y-10">
                 {/* Hero Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-auto lg:h-[320px]">
-                  {/* Left Steps */}
-                  <div className="lg:col-span-3 ui-card p-6 flex flex-col justify-between rounded-lg border border-[color:var(--border)] h-full">
-                    <div className="space-y-6">
-                      <div className="flex gap-4">
-                        <div className="flex flex-col items-center">
-                          <div className="w-6 h-6 rounded-full border border-[color:var(--primary)] text-[color:var(--primary)] flex items-center justify-center text-xs font-medium">1</div>
-                          <div className="w-px h-full bg-[color:var(--border)] my-1"></div>
+                <div className="flex flex-col lg:flex-row bg-white rounded-lg border border-[color:var(--border)] overflow-hidden shadow-[var(--shadow-sm)]">
+                  {/* Left Steps Menu */}
+                  <div className="lg:w-[320px] flex-shrink-0 flex flex-col justify-center py-6 px-4 border-b lg:border-b-0 lg:border-r border-[color:var(--border)] bg-white">
+                    <div className="space-y-1">
+                      <div 
+                        onClick={() => { setCurrentApp('demo'); setDemoViewMode('flow'); }}
+                        className={`group flex items-center gap-4 p-3 rounded-md transition-all cursor-pointer ${true ? 'bg-[color:var(--bg-surface-2)]' : 'hover:bg-[color:var(--bg-surface-2)]'}`}
+                      >
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border transition-colors ${true ? 'border-[color:var(--text-3)] text-[color:var(--text-2)]' : 'border-[color:var(--border-strong)] text-[color:var(--text-3)]'}`}>
+                          1
                         </div>
                         <div>
-                          <h4 className="text-[14px] font-medium text-[color:var(--text)]">浏览行业方案</h4>
-                          <p className="text-[12px] text-[color:var(--text-2)] mt-1">探索不同行业的 AI 落地场景</p>
+                          <h4 className={`text-[14px] font-medium transition-colors ${true ? 'text-[color:var(--text)]' : 'text-[color:var(--text-2)] group-hover:text-[color:var(--text)]'}`}>浏览行业方案</h4>
                         </div>
                       </div>
-                      <div className="flex gap-4">
-                         <div className="flex flex-col items-center">
-                          <div className="w-6 h-6 rounded-full border border-[color:var(--border-strong)] text-[color:var(--text-3)] flex items-center justify-center text-xs font-medium">2</div>
-                          <div className="w-px h-full bg-[color:var(--border)] my-1"></div>
+                      <div 
+                        onClick={() => { setCurrentApp('efficiency'); }}
+                        className="group flex items-center gap-4 p-3 rounded-md transition-all cursor-pointer hover:bg-[color:var(--bg-surface-2)]"
+                      >
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border border-[color:var(--border-strong)] text-[color:var(--text-3)]">
+                          2
                         </div>
                         <div>
-                          <h4 className="text-[14px] font-medium text-[color:var(--text)]">体验数字伙伴</h4>
-                          <p className="text-[12px] text-[color:var(--text-2)] mt-1">与 AI 助手协作完成任务</p>
+                          <h4 className="text-[14px] font-medium text-[color:var(--text-2)] group-hover:text-[color:var(--text)]">体验数字伙伴</h4>
                         </div>
                       </div>
-                      <div className="flex gap-4">
-                         <div className="flex flex-col items-center">
-                          <div className="w-6 h-6 rounded-full border border-[color:var(--border-strong)] text-[color:var(--text-3)] flex items-center justify-center text-xs font-medium">3</div>
+                       <div className="group flex items-center gap-4 p-3 rounded-md transition-all cursor-pointer hover:bg-[color:var(--bg-surface-2)] opacity-60">
+                          <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium border border-[color:var(--border-strong)] text-[color:var(--text-3)]">
+                            3
+                          </div>
+                          <div>
+                            <h4 className="text-[14px] font-medium text-[color:var(--text-3)] group-hover:text-[color:var(--text-2)]">更多功能正在开发</h4>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="text-[14px] font-medium text-[color:var(--text)]">查看数据洞察</h4>
-                          <p className="text-[12px] text-[color:var(--text-2)] mt-1">基于 AI 分析的业务决策</p>
-                        </div>
-                      </div>
                     </div>
-                    <button
-                      onClick={() => setCurrentApp('demo')}
-                      className="w-full ui-btn ui-btn-secondary h-9 text-[13px] justify-center font-medium rounded-md mt-4"
-                    >
-                      查看全部方案
-                    </button>
                   </div>
 
                   {/* Right Banner */}
-                  <div className="lg:col-span-9 ui-card overflow-hidden border border-[color:var(--border)] shadow-[var(--shadow-sm)] rounded-lg relative bg-gradient-to-br from-blue-50 to-white">
-                    <div className="px-8 py-10 relative z-10 h-full flex flex-col justify-center">
-                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[color:var(--text)] tracking-tight leading-tight mb-4">
-                        <TextType
-                          text={['欢迎来到\n飞书 AI 解决方案样板间']}
-                          typingSpeed={100}
-                          cursorCharacter="|"
-                          loop={false}
-                          showCursor={true}
-                        />
-                      </h2>
-                      <p className="text-base text-[color:var(--text-2)] leading-relaxed max-w-xl font-normal mb-8">
-                        用最短路径把客户需求翻译成方案故事线：<br/>数据结构化 → AI 洞察 → 行动闭环。
-                      </p>
-                      <button
-                        onClick={() => setCurrentApp('demo')}
-                        className="w-fit ui-btn ui-btn-primary h-10 px-6 text-[14px] justify-center font-medium transition-transform active:scale-95 rounded-md shadow-md hover:shadow-lg"
-                      >
-                        开始探索
-                        <ArrowRight size={14} />
-                      </button>
-                    </div>
-                    
-                    {/* Decorative Image */}
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 h-[120%] w-[50%] hidden lg:flex items-center justify-center pointer-events-none z-0 opacity-90 mix-blend-multiply">
-                      <img 
-                        src="/images/Gemini_Generated_Image_bsrt5bbsrt5bbsrt.png" 
-                        alt="Feishu AI Solution" 
-                        className="max-w-full max-h-full object-contain transform scale-[1.1]"
-                        loading="lazy"
-                      />
-                    </div>
+                  <div className="flex-1 bg-[color:var(--bg-surface-2)] flex items-center justify-center overflow-hidden relative">
+                    <img 
+                      src="/images/Gemini_Generated_Image_mfzzjvmfzzjvmfzz.png" 
+                      alt="Feishu AI Solution" 
+                      className="w-full h-auto block"
+                      loading="lazy"
+                    />
                   </div>
                 </div>
 
@@ -498,83 +584,166 @@ const App: React.FC = () => {
                 <section>
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-[14px] font-medium text-[color:var(--text)]">快速操作</h3>
-                    <button 
-                      onClick={() => setCurrentApp('efficiency')}
-                      className="flex items-center gap-1 text-[13px] text-[color:var(--text-2)] hover:text-[color:var(--text)] transition-colors"
-                    >
-                      查看全部
-                      <ArrowRight size={14} />
-                    </button>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {EFFICIENCY_TOOLS.map((tool) => (
-                      <div
-                        key={tool.id}
-                        onClick={() => window.open(tool.url, '_blank')}
+                    <div
+                        onClick={() => {
+                          setSelectedDemo(null);
+                          setCurrentApp('demo');
+                        }}
                         className="flex items-center gap-3 p-3 bg-[color:var(--bg-surface-1)] border border-[color:var(--border)] rounded-lg hover:shadow-md hover:border-[color:var(--primary)] transition-all cursor-pointer group"
                       >
-                        <div className="w-9 h-9 rounded-md bg-[color:var(--bg-surface-2)] flex items-center justify-center text-[color:var(--primary)] group-hover:bg-[color:var(--primary)] group-hover:text-white transition-colors">
-                          {tool.avatarUrl ? (
-                            <img src={tool.avatarUrl} alt="" className="w-5 h-5 object-contain" />
-                          ) : (
-                            <Zap size={18} />
-                          )}
+                        <div className="w-9 h-9 rounded-md bg-[color:var(--bg-surface-2)] flex items-center justify-center text-[color:var(--primary)] transition-colors">
+                          <img src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/ChatGPT%20Image%202025%E5%B9%B412%E6%9C%8825%E6%97%A5%2014_31_10%201.png" alt="Demo" className="w-5 h-5 object-contain" loading="lazy" />
                         </div>
                         <div className="flex flex-col min-w-0">
-                          <span className="text-[13px] font-medium text-[color:var(--text)] truncate">{tool.title}</span>
-                          <span className="text-[11px] text-[color:var(--text-3)] truncate">{tool.name}</span>
+                          <span className="text-[13px] font-medium text-[color:var(--text)] truncate">Demo中心</span>
+                          <span className="text-[11px] text-[color:var(--text-3)] truncate">浏览所有方案</span>
                         </div>
                       </div>
-                    ))}
-                    <div className="flex items-center gap-3 p-3 bg-[color:var(--bg-surface-1)] border border-dashed border-[color:var(--border)] rounded-lg hover:border-[color:var(--text-3)] transition-all cursor-default">
-                       <div className="w-9 h-9 rounded-md bg-[color:var(--bg-surface-2)] flex items-center justify-center text-[color:var(--text-3)]">
-                         <Plus size={18} />
-                       </div>
-                       <span className="text-[13px] text-[color:var(--text-3)]">更多工具</span>
-                    </div>
+
+                      <div
+                        onClick={() => {
+                           if (selectedDemo) setDemoViewMode('workspace');
+                           setCurrentApp('efficiency');
+                        }}
+                        className="flex items-center gap-3 p-3 bg-[color:var(--bg-surface-1)] border border-[color:var(--border)] rounded-lg hover:shadow-md hover:border-[color:var(--primary)] transition-all cursor-pointer group"
+                      >
+                        <div className="w-9 h-9 rounded-md bg-[color:var(--bg-surface-2)] flex items-center justify-center text-[color:var(--primary)] transition-colors">
+                          <img src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/ChatGPT%20Image%202025%E5%B9%B412%E6%9C%8825%E6%97%A5%2014_31_37%201.png" alt="数字伙伴" className="w-5 h-5 object-contain" loading="lazy" />
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-[13px] font-medium text-[color:var(--text)] truncate">数字伙伴</span>
+                          <span className="text-[11px] text-[color:var(--text-3)] truncate">AI 效率工具</span>
+                        </div>
+                      </div>
+
+                      <div
+                        onClick={() => window.open(AI_NAVIGATOR_URL, '_blank')}
+                        className="flex items-center gap-3 p-3 bg-[color:var(--bg-surface-1)] border border-[color:var(--border)] rounded-lg hover:shadow-md hover:border-[color:var(--primary)] transition-all cursor-pointer group"
+                      >
+                        <div className="w-9 h-9 rounded-md bg-[color:var(--bg-surface-2)] flex items-center justify-center text-[color:var(--primary)] transition-colors">
+                          <img src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/ChatGPT%20Image%202025%E5%B9%B412%E6%9C%8825%E6%97%A5%2014_36_28%201.png" alt="AI领航者" className="w-5 h-5 object-contain" loading="lazy" />
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-[13px] font-medium text-[color:var(--text)] truncate">AI领航者</span>
+                          <span className="text-[11px] text-[color:var(--text-3)] truncate">探索更多可能</span>
+                        </div>
+                      </div>
                   </div>
                 </section>
 
                 {/* News Push (Demo List) */}
                 <section>
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-[14px] font-medium text-[color:var(--text)]">最新方案</h3>
+                    <h3 className="text-[14px] font-medium text-[color:var(--text)]">最新 Demo</h3>
                     <div className="flex gap-2">
-                       <button className="w-6 h-6 rounded-full border border-[color:var(--border)] flex items-center justify-center text-[color:var(--text-2)] hover:bg-[color:var(--bg-surface-2)]">
+                       <button 
+                         onClick={() => {
+                           const container = document.getElementById('demo-list-container');
+                           if (container) container.scrollBy({ left: -container.clientWidth, behavior: 'smooth' });
+                         }}
+                         className="w-6 h-6 rounded-full border border-[color:var(--border)] flex items-center justify-center text-[color:var(--text-2)] hover:bg-[color:var(--bg-surface-2)] transition-colors active:scale-95"
+                       >
                          <ChevronDown size={14} className="rotate-90" />
                        </button>
-                       <button className="w-6 h-6 rounded-full border border-[color:var(--border)] flex items-center justify-center text-[color:var(--text-2)] hover:bg-[color:var(--bg-surface-2)]">
+                       <button 
+                         onClick={() => {
+                           const container = document.getElementById('demo-list-container');
+                           if (container) container.scrollBy({ left: container.clientWidth, behavior: 'smooth' });
+                         }}
+                         className="w-6 h-6 rounded-full border border-[color:var(--border)] flex items-center justify-center text-[color:var(--text-2)] hover:bg-[color:var(--bg-surface-2)] transition-colors active:scale-95"
+                       >
                          <ChevronRight size={14} />
                        </button>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {DEMO_LIST.map((demo) => (
-                      <div
-                        key={demo.id}
-                        onClick={() => {
-                          setWorkspaceInitialView('main');
-                          setSelectedDemo(demo);
-                          setCurrentApp('demo');
-                          setDemoViewMode('flow');
-                        }}
-                        className="group cursor-pointer"
-                      >
-                        <div className="aspect-video w-full rounded-lg overflow-hidden border border-[color:var(--border)] mb-3 relative">
-                          {demo.cover ? (
-                            <img src={demo.cover} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                          ) : (
-                            <div className="w-full h-full bg-[color:var(--bg-surface-2)] flex items-center justify-center text-[color:var(--text-3)]">
-                              <LayoutGrid size={24} />
+                  <div 
+                    id="demo-list-container"
+                    className="flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar -mx-1 px-1 pb-1 scroll-smooth"
+                  >
+                    {/* Page 1 */}
+                    <div className="flex-none w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 snap-start">
+                      {DEMO_LIST.slice(0, 4).map((demo) => (
+                        <Card
+                          key={demo.id}
+                          bordered={false}
+                          shadowed={false}
+                          onClick={() => {
+                            setWorkspaceInitialView('main');
+                            setSelectedDemo(demo);
+                            setCurrentApp('demo');
+                            setDemoViewMode('flow');
+                          }}
+                          className="group cursor-pointer overflow-hidden bg-[color:var(--bg-surface-1)] border-[0.5px] border-[color:var(--border)] hover:-translate-y-[2px] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition-all duration-300 rounded-lg flex flex-col h-full p-0"
+                          style={{ padding: 0 }}
+                        >
+                          <div className="aspect-video w-full relative border-b-[0.5px] border-[color:var(--border)] bg-[color:var(--bg-surface-2)]">
+                            {demo.cover ? (
+                              <img src={demo.cover} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-[color:var(--text-3)]">
+                                <LayoutGrid size={24} />
+                              </div>
+                            )}
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
+                          </div>
+                          <div className="p-3 flex-1 flex flex-col justify-center">
+                            <h4 className="text-[16px] font-medium text-[color:var(--text)] mb-1 truncate group-hover:text-[color:var(--primary)] transition-colors">{demo.title}</h4>
+                            <p className="text-[12px] text-[color:var(--text-3)] line-clamp-1">{demo.valueProp}</p>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+
+                    {/* Page 2 (More Demos Placeholder) */}
+                    <div className="flex-none w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 snap-start">
+                      {DEMO_LIST.slice(4).map((demo) => (
+                        <div key={demo.id} className="h-full">
+                        {demo.isPlaceholder ? (
+                           <div
+                            onClick={() => {}}
+                            className="h-full ui-card overflow-hidden text-left bg-[color:var(--bg-subtle)] border border-dashed border-[color:var(--border)] hover:border-[color:var(--text-3)] flex flex-col justify-center items-center text-center p-5 rounded-lg transition-colors group cursor-default"
+                          >
+                            <div className="w-9 h-9 rounded-full bg-[color:var(--surface)] border border-[color:var(--border)] flex items-center justify-center text-[color:var(--text-3)] mb-3 group-hover:scale-110 transition-transform duration-300">
+                              <LayoutGrid size={14} />
                             </div>
-                          )}
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
+                            <h4 className="text-[16px] font-medium text-[color:var(--text)] mb-1">{demo.title}</h4>
+                            <p className="text-[11px] text-[color:var(--text-3)]">{demo.valueProp}</p>
+                          </div>
+                        ) : (
+                          <Card
+                            bordered={false}
+                            shadowed={false}
+                            onClick={() => {
+                              setWorkspaceInitialView('main');
+                              setSelectedDemo(demo);
+                              setCurrentApp('demo');
+                              setDemoViewMode('flow');
+                            }}
+                            className="group cursor-pointer overflow-hidden bg-[color:var(--bg-surface-1)] border-[0.5px] border-[color:var(--border)] hover:-translate-y-[2px] hover:shadow-[0_8px_24px_rgba(0,0,0,0.12)] transition-all duration-300 rounded-lg flex flex-col h-full p-0"
+                            style={{ padding: 0 }}
+                          >
+                            <div className="aspect-video w-full relative border-b-[0.5px] border-[color:var(--border)] bg-[color:var(--bg-surface-2)]">
+                              {demo.cover ? (
+                                <img src={demo.cover} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-[color:var(--text-3)]">
+                                  <LayoutGrid size={24} />
+                                </div>
+                              )}
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
+                            </div>
+                            <div className="p-3 flex-1 flex flex-col justify-center">
+                              <h4 className="text-[16px] font-medium text-[color:var(--text)] mb-1 truncate group-hover:text-[color:var(--primary)] transition-colors">{demo.title}</h4>
+                              <p className="text-[12px] text-[color:var(--text-3)] line-clamp-1">{demo.valueProp}</p>
+                            </div>
+                          </Card>
+                        )}
                         </div>
-                        <h4 className="text-[14px] font-medium text-[color:var(--text)] mb-1 truncate group-hover:text-[color:var(--primary)] transition-colors">{demo.title}</h4>
-                        <p className="text-[12px] text-[color:var(--text-3)] line-clamp-1">{demo.valueProp}</p>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </section>
 
@@ -583,50 +752,105 @@ const App: React.FC = () => {
                   {/* Recently */}
                   <div className="lg:col-span-8">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-[14px] font-medium text-[color:var(--text)]">最近访问</h3>
-                      <div className="flex items-center gap-2 text-[12px] text-[color:var(--text-2)] cursor-pointer hover:text-[color:var(--text)]">
+                      <h3 className="text-[14px] font-medium text-[color:var(--text)]">数字伙伴</h3>
+                      <button className="flex items-center gap-2 text-[12px] text-[color:var(--text-2)] hover:text-[color:var(--text)] transition-colors">
                         <span>全部类型</span>
                         <ChevronDown size={12} />
-                      </div>
+                      </button>
                     </div>
-                    <div className="ui-card border border-[color:var(--border)] rounded-lg divide-y divide-[color:var(--border)]">
-                      {[
-                        { title: '智能巡检方案演示', type: 'Demo', time: '10分钟前', icon: <ScanLine size={16} /> },
-                        { title: '与"探探"进行了对话', type: 'Chat', time: '1小时前', icon: <MessageSquare size={16} /> },
-                        { title: '查看了"AI 智能巡检"工具', type: 'Tool', time: '昨天', icon: <Zap size={16} /> },
-                      ].map((item, i) => (
-                        <div key={i} className="flex items-center justify-between p-4 hover:bg-[color:var(--bg-surface-2)] transition-colors cursor-pointer">
+                    <Card borderRadius="medium" shadow="small">
+                      {EFFICIENCY_TOOLS.map((tool, index) => (
+                        <div
+                          key={tool.id}
+                          onClick={() => window.open(tool.url, '_blank')}
+                          className={`flex items-center justify-between p-4 hover:bg-[color:var(--bg-surface-2)] transition-colors cursor-pointer group ${index !== EFFICIENCY_TOOLS.length - 1 ? 'border-b border-[color:var(--border)]' : ''}`}
+                        >
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded bg-[color:var(--bg-surface-2)] flex items-center justify-center text-[color:var(--primary)]">
-                              {item.icon}
+                            <div className="w-12 h-12 rounded-lg overflow-hidden bg-[color:var(--bg-surface-2)] flex items-center justify-center">
+                              {tool.avatarUrl ? (
+                                <img src={tool.avatarUrl} alt="" className="w-8 h-8 object-contain" />
+                              ) : (
+                                <Zap size={24} className="text-[color:var(--primary)]" />
+                              )}
                             </div>
-                            <span className="text-[13px] text-[color:var(--text)]">{item.title}</span>
+                            <div>
+                              <div className="text-[13px] text-[color:var(--text)] font-medium">{tool.title}</div>
+                              <div className="text-[11px] text-[color:var(--text-3)] mt-0.5">{tool.name}</div>
+                            </div>
                           </div>
-                          <span className="text-[12px] text-[color:var(--text-3)]">{item.time}</span>
+                          <div className="flex items-center gap-2">
+                             <Tag color="neutral" size="small" shape="round">
+                                {tool.skills[0]}
+                              </Tag>
+                             <span className="text-[12px] text-[color:var(--text-3)]">刚刚</span>
+                          </div>
                         </div>
                       ))}
-                    </div>
+                    </Card>
                   </div>
 
-                  {/* Related Applications */}
-                  <div className="lg:col-span-4">
+                  {/* Site AI Assistant (Integrated) */}
+                  <div className="lg:col-span-4 flex flex-col">
                      <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-[14px] font-medium text-[color:var(--text)]">相关应用</h3>
+                      <h3 className="text-[14px] font-medium text-[color:var(--text)]">站点智能问答助手</h3>
                     </div>
-                    <div className="ui-card border border-[color:var(--border)] rounded-lg p-2">
-                      {[
-                        { name: '飞书文档', desc: '高效创作与协作', icon: '📝' },
-                        { name: '飞书多维表格', desc: '新一代业务系统', icon: '📊' },
-                        { name: '飞书妙记', desc: '智能会议纪要', icon: '🎙️' },
-                      ].map((app, i) => (
-                        <div key={i} className="flex items-center gap-3 p-3 hover:bg-[color:var(--bg-surface-2)] rounded-md cursor-pointer transition-colors">
-                           <div className="w-8 h-8 flex items-center justify-center text-xl">{app.icon}</div>
-                           <div>
-                             <h4 className="text-[13px] font-medium text-[color:var(--text)]">{app.name}</h4>
-                             <p className="text-[11px] text-[color:var(--text-3)]">{app.desc}</p>
-                           </div>
+                    <div className="ui-card border border-[color:var(--border)] rounded-lg flex flex-col overflow-hidden h-[500px]">
+                      {/* Messages Area */}
+                      <div className="flex-1 overflow-y-auto no-scrollbar p-3 space-y-3 bg-[color:var(--bg-surface-1)]">
+                        {homeMessages.map((m, idx) => (
+                          <div key={idx} className="flex flex-col gap-1.5">
+                            <div className={`flex ${m.role === 'ai' ? 'justify-start' : 'justify-end'}`}>
+                              <div className={`max-w-[90%] p-2.5 rounded-lg text-[12px] leading-relaxed border shadow-sm ${m.role === 'ai' ? 'bg-[color:var(--bg-surface-2)] border-[color:var(--border)] text-[color:var(--text)]' : 'bg-[color:var(--primary)] border-transparent text-white'}`}>
+                                {m.role === 'ai' ? (
+                                  <div dangerouslySetInnerHTML={{ __html: renderRichText(m.text) }} />
+                                ) : (
+                                  m.text
+                                )}
+                              </div>
+                            </div>
+                            {idx === 0 && m.role === 'ai' && (
+                              <div className="flex flex-wrap gap-1.5 ml-1">
+                                <button onClick={() => setHomeInput('探探')} className="px-2 py-1 text-[10px] rounded-full border border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] transition-colors text-[color:var(--text-2)]">探探</button>
+                                <button onClick={() => setHomeInput('蕊蕊')} className="px-2 py-1 text-[10px] rounded-full border border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] transition-colors text-[color:var(--text-2)]">蕊蕊</button>
+                                <button onClick={() => setHomeInput('巡检')} className="px-2 py-1 text-[10px] rounded-full border border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] transition-colors text-[color:var(--text-2)]">巡检</button>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                        {isHomeChatLoading && (
+                          <div className="flex justify-start">
+                            <div className="max-w-[90%] p-2.5 rounded-lg border bg-[color:var(--bg-surface-2)] border-[color:var(--border)]">
+                              <div className="flex items-center gap-2">
+                                <div className="flex gap-1">
+                                  <StarThinkingAnimation size={16} />
+                                </div>
+                                <span className="text-[11px] text-[color:var(--text-3)]">AI 正在思考...</span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Input Area */}
+                      <div className="p-3 border-t border-[color:var(--border)] bg-[color:var(--bg-surface-1)]">
+                        <div className="relative w-full">
+                          <input
+                            value={homeInput}
+                            onChange={(e) => setHomeInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') sendHomeMessage();
+                            }}
+                            placeholder="输入你的问题…"
+                            className="w-full pl-3 pr-9 h-9 text-[12px] rounded-md bg-[color:var(--bg-surface-2)] border border-transparent focus:border-[color:var(--primary)] focus:bg-[color:var(--bg-surface-1)] transition-all outline-none"
+                          />
+                          <button
+                            onClick={sendHomeMessage}
+                            className="absolute right-1 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center text-[color:var(--primary)] hover:bg-[color:var(--primary-subtle)] rounded-md transition-colors"
+                          >
+                            <Send size={14} />
+                          </button>
                         </div>
-                      ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -635,87 +859,6 @@ const App: React.FC = () => {
               </div>
             </div>
 
-            <aside
-              className={`lg:w-[320px] lg:h-auto flex flex-col flex-shrink-0 z-40 lg:relative fixed top-[56px] lg:top-auto lg:right-auto lg:left-auto bottom-auto transition-all duration-300 ease-in-out backdrop-blur-xl ${
-                isHomeChatCollapsed
-                  ? 'w-10 h-10 rounded-full right-4 left-auto bg-[color:var(--primary)] shadow-lg border-0 items-center justify-center overflow-hidden'
-                  : 'w-[calc(100%-32px)] h-[360px] right-4 left-4 rounded-2xl bg-[color:var(--bg-surface-1)] shadow-[var(--shadow-xl)] border border-[color:var(--border)]'
-              } lg:bg-transparent lg:shadow-[var(--shadow-xl)] lg:border lg:border-t-0 lg:border-l lg:border-[color:var(--border)] lg:rounded-none lg:items-stretch lg:justify-start lg:overflow-visible ui-card`}
-            >
-              <div className={`h-11 lg:h-12 border-b border-[color:var(--border)] flex items-center justify-between px-3.5 lg:px-4 bg-transparent flex-shrink-0 ${isHomeChatCollapsed ? 'border-0 p-0 justify-center w-full h-full' : ''}`}>
-                <button
-                  type="button"
-                  onClick={() => setIsHomeChatCollapsed((v) => !v)}
-                  className={`flex items-center gap-2 text-[13px] font-medium text-[color:var(--text)] min-w-0 lg:pointer-events-none w-full lg:w-auto ${isHomeChatCollapsed ? 'justify-center h-full text-white' : ''}`}
-                  aria-label={isHomeChatCollapsed ? '展开首页 AI 助手' : '折叠首页 AI 助手'}
-                >
-                  <div className={`w-5 h-5 rounded-md flex items-center justify-center shadow-sm flex-shrink-0 ${isHomeChatCollapsed ? 'bg-transparent text-white shadow-none' : 'bg-[color:var(--primary)] text-white'}`}>
-                    <Zap size={12} />
-                  </div>
-                  <span className={`flex-1 text-left ${isHomeChatCollapsed ? 'hidden lg:block' : 'block'}`}>首页 AI 助手</span>
-                  <ChevronDown size={14} className={`lg:hidden transition-transform ${isHomeChatCollapsed ? 'hidden' : 'rotate-180'}`} />
-                </button>
-              </div>
-
-              <div className={`flex-1 overflow-y-auto no-scrollbar p-3.5 lg:p-4 space-y-3 bg-transparent ${isHomeChatCollapsed ? 'hidden lg:block' : ''}`}>
-                {homeMessages.map((m, idx) => (
-                  <div key={idx} className="flex flex-col gap-1.5">
-                    <div className={`flex ${m.role === 'ai' ? 'justify-start' : 'justify-end'}`}>
-                      <div className={`max-w-[90%] p-2.5 lg:p-3 rounded-lg text-[12px] lg:text-[13px] leading-relaxed border shadow-[var(--shadow-sm)] ${m.role === 'ai' ? 'bg-[color:var(--surface)]/80 border-[color:var(--border)] text-[color:var(--text)] backdrop-blur-md' : 'bg-[color:var(--primary)] border-transparent text-white'}`}>
-                        {m.role === 'ai' ? (
-                          <div dangerouslySetInnerHTML={{ __html: renderRichText(m.text) }} />
-                        ) : (
-                          m.text
-                        )}
-                      </div>
-                    </div>
-                    {idx === 0 && m.role === 'ai' && (
-                      <div className="flex flex-wrap gap-1.5 ml-1">
-                        <button onClick={() => setHomeInput('探探')} className="ui-btn ui-btn-secondary h-6 lg:h-7 px-2.5 lg:px-3 text-[11px] lg:text-xs rounded-full border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] shadow-sm transition-all">探探</button>
-                        <button onClick={() => setHomeInput('睿睿')} className="ui-btn ui-btn-secondary h-6 lg:h-7 px-2.5 lg:px-3 text-[11px] lg:text-xs rounded-full border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] shadow-sm transition-all">睿睿</button>
-                        <button onClick={() => setHomeInput('巡检')} className="ui-btn ui-btn-secondary h-6 lg:h-7 px-2.5 lg:px-3 text-[11px] lg:text-xs rounded-full border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] shadow-sm transition-all">巡检</button>
-                      </div>
-                    )}
-                  </div>
-                ))}
-                {isHomeChatLoading && (
-                  <div className="flex justify-start">
-                    <div className="max-w-[90%] p-2.5 lg:p-3 rounded-lg border bg-[color:var(--surface)]/80 border-[color:var(--border)] backdrop-blur-md">
-                      <div className="flex items-center gap-2">
-                        <div className="flex gap-1">
-                          <span className="w-1.5 h-1.5 bg-[color:var(--text-3)] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                          <span className="w-1.5 h-1.5 bg-[color:var(--text-3)] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                          <span className="w-1.5 h-1.5 bg-[color:var(--text-3)] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
-                        </div>
-                        <span className="text-[11px] text-[color:var(--text-3)]">AI 正在思考...</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className={`p-3 lg:p-4 border-t border-[color:var(--border)] bg-transparent flex-shrink-0 ${isHomeChatCollapsed ? 'hidden lg:block' : ''}`}>
-                <div className="relative w-full flex flex-col lg:block gap-2 lg:gap-0">
-                  <input
-                    value={homeInput}
-                    onChange={(e) => setHomeInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') sendHomeMessage();
-                    }}
-                    placeholder="输入你的问题…"
-                    className="ui-input w-full pl-3.5 pr-3.5 lg:pr-10 h-9 lg:h-10 text-[12px] lg:text-sm rounded-full bg-[color:var(--bg-surface-2)] border-transparent focus:bg-[color:var(--bg-surface-1)] focus:border-[color:var(--primary)] transition-all shadow-inner"
-                  />
-                  <div className="flex justify-end lg:block">
-                    <button
-                      onClick={sendHomeMessage}
-                      className="static lg:absolute lg:right-1 lg:top-1/2 lg:-translate-y-1/2 w-7 h-7 flex items-center justify-center bg-[color:var(--primary)] text-white rounded-full shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all"
-                    >
-                      <Send size={12} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </aside>
           </div>
         ) : currentApp === 'demo' ? (
           <Catalog onSelectDemo={(demo) => { setWorkspaceInitialView('main'); setSelectedDemo(demo); setCurrentApp('demo'); setDemoViewMode('flow'); }} />

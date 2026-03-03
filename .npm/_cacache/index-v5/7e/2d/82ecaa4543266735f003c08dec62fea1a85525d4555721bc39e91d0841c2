@@ -1,0 +1,2 @@
+
+8ad1e22060ec29d31b4c081b3c5cc513731c3944	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/proxy-addr/-/proxy-addr-2.0.7.tgz","integrity":"sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg==","time":1772509714976,"size":5495,"metadata":{"time":1772509712743,"url":"https://bnpm.byted.org/proxy-addr/-/proxy-addr-2.0.7.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:32 GMT"},"options":{"compress":true}}}

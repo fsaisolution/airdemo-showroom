@@ -1,0 +1,1 @@
+{"source":527,"name":"forwarded","dependency":"forwarded","title":"Regular Expression Denial of Service","url":"","severity":"high","versions":["0.1.0","0.1.1","0.1.2","0.2.0"],"vulnerableVersions":["0.1.0","0.1.1"],"range":"< 0.1.2","id":"d925PRmXhw7tkXDBOvnkfa1reM9Uq0HOIxrcbyUQ+U0z7/jZR8qVJgX9Juci0ZyhJv9mS7xsXpbocRT58f+AvA=="}

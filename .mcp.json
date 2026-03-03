@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "bytedance-mcp-universedesign": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "--registry",
+        "https://bnpm.byted.org",
+        "-y",
+        "@byted/mcp-proxy@latest"
+      ],
+      "env": {
+        "MCP_SERVER_PSM": "bytedance.mcp.universedesign",
+        "MCP_GATEWAY_REGION": "CN",
+        "BYTED_MCP_HOME": "/Users/bytedance/Desktop/01-项目/week2/airdemo/airdemo---feishu-ai-solution-showroom (1)/.bytefaas",
+        "HOME": "/Users/bytedance/Desktop/01-项目/week2/airdemo/airdemo---feishu-ai-solution-showroom (1)"
+      }
+    }
+  }
+}

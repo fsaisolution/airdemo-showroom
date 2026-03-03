@@ -1,0 +1,2 @@
+
+017aada8f94afb7ff16f36ac792af0fc81648d44	{"key":"make-fetch-happen:request-cache:https://bnpm.byted.org/cross-spawn/-/cross-spawn-7.0.6.tgz","integrity":"sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==","time":1772509715693,"size":6255,"metadata":{"time":1772509713414,"url":"https://bnpm.byted.org/cross-spawn/-/cross-spawn-7.0.6.tgz","reqHeaders":{},"resHeaders":{"content-type":"application/x-gzip","date":"Tue, 03 Mar 2026 03:48:33 GMT"},"options":{"compress":true}}}
