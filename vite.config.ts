@@ -5,7 +5,9 @@ import viteCompression from 'vite-plugin-compression';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
+    const base = process.env.BASE_PATH || '/';
     return {
+      base,
       server: {
         port: 8080,
         host: 'localhost',
