@@ -16,7 +16,8 @@ import {
   ArrowRight,
   Zap,
   Clock,
-  ArrowUpRight
+  ArrowUpRight,
+  ScanLine
 } from 'lucide-react';
 import { DEMO_LIST, EFFICIENCY_TOOLS, PROMPT_TEMPLATES, INSPECTION_COVER_URL, GTM_COVER_URL } from './constants';
 import Catalog from './views/Catalog';
@@ -35,6 +36,32 @@ type WorkspaceViewId = 'main' | 'management' | 'equipment' | 'factory';
 type Message = {
   role: 'user' | 'ai';
   text: string;
+  html?: string;
+};
+
+const renderRichText = (text: string) => {
+  let processedText = text;
+  
+  processedText = processedText.replace(/\*\*(.*?)\*\*/g, '<strong class="text-base font-semibold text-[color:var(--text)]">$1</strong>');
+  processedText = processedText.replace(/\*(.*?)\*/g, '<em class="text-[color:var(--text-2)]">$1</em>');
+  processedText = processedText.replace(/`(.*?)`/g, '<code class="bg-[color:var(--bg-surface-2)] px-1.5 py-0.5 rounded text-xs font-mono text-[color:var(--primary)] border border-[color:var(--border)]">$1</code>');
+  
+  const urlRegex = /(https?:\/\/[^\s\)]+)/g;
+  processedText = processedText.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-[color:var(--primary)] hover:text-[color:var(--primary-hover)] underline font-medium">$1</a>');
+  
+  processedText = processedText.replace(/^### (.+)$/gm, '<h3 class="text-sm font-semibold text-[color:var(--text)] mt-3 mb-2 border-l-2 border-[color:var(--primary)] pl-2">$1</h3>');
+  processedText = processedText.replace(/^## (.+)$/gm, '<h2 class="text-base font-bold text-[color:var(--text)] mt-4 mb-2">$1</h2>');
+  processedText = processedText.replace(/^# (.+)$/gm, '<h1 class="text-lg font-bold text-[color:var(--text)] mt-4 mb-2">$1</h1>');
+  
+  processedText = processedText.replace(/^- (.+)$/gm, '<li class="text-xs text-[color:var(--text-2)] ml-4 mb-1">$1</li>');
+  processedText = processedText.replace(/^(\d+)\. (.+)$/gm, '<li class="text-xs text-[color:var(--text-2)] ml-4 mb-1"><span class="font-medium text-[color:var(--text)]">$1.</span> $2</li>');
+  
+  processedText = processedText.replace(/\n\n/g, '</p><p class="text-xs text-[color:var(--text-2)] leading-relaxed mb-2">');
+  processedText = processedText.replace(/\n/g, '<br/>');
+  
+  processedText = '<p class="text-xs text-[color:var(--text-2)] leading-relaxed mb-2">' + processedText + '</p>';
+  
+  return processedText;
 };
 
 const AI_NAVIGATOR_URL = 'http://115.190.84.234:8081';
@@ -153,7 +180,7 @@ const App: React.FC = () => {
 
   return (
     <div className="h-[100dvh] w-full bg-[color:var(--bg)] overflow-hidden font-sans relative">
-      <div className="absolute inset-0 pointer-events-none z-0 opacity-40">
+      {/* <div className="absolute inset-0 pointer-events-none z-0 opacity-40">
         <Prism 
           animationType="rotate" 
           timeScale={0.5} 
@@ -166,24 +193,26 @@ const App: React.FC = () => {
           glow={1} 
           suspendWhenOffscreen={true}
         /> 
-      </div>
-      <header className="fixed top-0 left-0 right-0 h-14 border-b border-[color:var(--border)] flex items-center justify-between px-4 lg:px-6 bg-[color:var(--bg-surface-1)] z-50">
+      </div> */}
+      <header className="fixed top-0 left-0 right-0 h-14 border-b border-[color:var(--border)] flex items-center justify-between px-5 lg:px-6 bg-[color:var(--bg-surface-1)] z-50 backdrop-blur-md bg-opacity-95">
         <div className="flex items-center gap-4 lg:gap-6 min-w-0 flex-1">
           <div className="flex items-center gap-3 cursor-pointer group flex-shrink-0" onClick={handleGoHome}>
-            <img 
-              src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/Lark_Suite_logo_2022%201_%E5%89%AF%E6%9C%AC.png" 
-              alt="Logo" 
-              className="w-8 h-8 object-contain transition-transform group-hover:scale-105"
-              loading="lazy"
-            />
+            <div className="relative w-8 h-8 flex-shrink-0">
+              <img 
+                src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/Lark_Suite_logo_2022%201_%E5%89%AF%E6%9C%AC.png" 
+                alt="Logo" 
+                className="w-full h-full object-contain transition-transform group-hover:scale-105"
+                loading="lazy"
+              />
+            </div>
             <div className="flex flex-col leading-tight hidden sm:flex">
-              <h1 className="font-semibold text-sm text-[color:var(--text)] tracking-tight">AirDemo</h1>
-              <span className="text-[10px] font-medium text-[color:var(--text-3)] tracking-wide">Showroom</span>
+              <h1 className="font-medium text-[15px] text-[color:var(--text)] tracking-tight group-hover:text-[color:var(--primary)] transition-colors">AirDemo</h1>
+              <span className="text-[11px] font-medium text-[color:var(--text-3)] tracking-wide">Showroom</span>
             </div>
           </div>
 
           {/* 桌面端导航菜单 */}
-          <nav className="hidden lg:flex items-center gap-1 ml-4 lg:ml-6 overflow-x-auto no-scrollbar mask-gradient-r">
+          <nav className="hidden lg:flex items-center gap-1 ml-2 lg:ml-8 overflow-x-auto no-scrollbar">
             {apps.map(app => (
               <button
                 key={app.id}
@@ -200,18 +229,29 @@ const App: React.FC = () => {
                   }
                   setCurrentApp(app.id);
                 }}
-                className={`ui-btn ui-btn-ghost px-3 h-8 gap-2 text-xs whitespace-nowrap flex-shrink-0 rounded-[var(--radius-md)] ${currentApp === app.id ? 'bg-[color:var(--bg-surface-2)] text-[color:var(--text)] font-medium' : 'text-[color:var(--text-2)] font-normal hover:text-[color:var(--text)]'}`}
+                className={`relative px-4 h-10 text-[14px] whitespace-nowrap flex-shrink-0 rounded-lg font-medium transition-all duration-150 ${
+                  currentApp === app.id 
+                    ? 'text-[color:var(--primary)] bg-[color:var(--primary)]/10' 
+                    : 'text-[color:var(--text-2)] hover:text-[color:var(--text)] hover:bg-[color:var(--bg-surface-2)]'
+                }`}
               >
-                {app.icon}
-                {app.name}
+                <span className="flex items-center gap-2">
+                  {app.icon}
+                  {app.name}
+                </span>
+                {currentApp === app.id && (
+                  <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-[color:var(--primary)] rounded-full" />
+                )}
               </button>
             ))}
+
+            <div className="w-px h-5 bg-[color:var(--border)] mx-2" />
 
             <a
               href={AI_NAVIGATOR_URL}
               target="_blank"
               rel="noreferrer"
-              className="ui-btn ui-btn-ghost px-3 h-8 gap-2 text-xs whitespace-nowrap flex-shrink-0 text-[color:var(--text-2)] font-normal hover:text-[color:var(--text)] rounded-[var(--radius-md)]"
+              className="relative px-4 h-10 text-[14px] whitespace-nowrap flex-shrink-0 rounded-lg font-medium transition-all duration-150 text-[color:var(--text-2)] hover:text-[color:var(--text)] hover:bg-[color:var(--bg-surface-2)] flex items-center gap-2"
             >
               <img src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/ChatGPT%20Image%202025%E5%B9%B412%E6%9C%8825%E6%97%A5%2014_36_28%201.png" alt="AI领航者" className="w-4 h-4 object-contain" loading="lazy" />
               AI领航者
@@ -220,28 +260,65 @@ const App: React.FC = () => {
 
           {/* 移动端汉堡菜单按钮 */}
           <button
-            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-[var(--radius-md)] hover:bg-[color:var(--bg-surface-2)] transition-colors ml-auto"
+            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[color:var(--bg-surface-2)] transition-colors ml-auto"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="打开菜单"
           >
             {isMobileMenuOpen ? (
-              <X className="w-6 h-6 text-[color:var(--text)]" />
+              <X className="w-5 h-5 text-[color:var(--text)]" />
             ) : (
-              <Menu className="w-6 h-6 text-[color:var(--text)]" />
+              <Menu className="w-5 h-5 text-[color:var(--text)]" />
             )}
           </button>
         </div>
 
-        <div className="hidden lg:flex items-center gap-3 lg:gap-4 flex-shrink-0 ml-4">
+        <div className="hidden lg:flex items-center gap-1 flex-shrink-0">
           {selectedDemo && (
-            <button onClick={handleReset} className="ui-btn border border-[color:var(--border)] h-8 text-xs px-3 whitespace-nowrap hover:bg-[color:var(--danger-subtle)] hover:text-[color:var(--danger)] hover:border-[color:var(--danger)] transition-all">
-              <span className="hidden sm:inline">退出演示</span>
-              <span className="sm:hidden">退出</span>
-            </button>
+            <>
+              <button 
+                onClick={handleReset} 
+                className="flex items-center gap-2 h-10 px-4 text-[14px] whitespace-nowrap border border-[color:var(--border)] rounded-lg hover:bg-[color:var(--danger-subtle)] hover:text-[color:var(--danger)] hover:border-[color:var(--danger)] transition-all duration-150"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>退出演示</span>
+              </button>
+              <div className="w-px h-5 bg-[color:var(--border)] mx-2"></div>
+            </>
           )}
-          <div className="h-4 w-[1px] bg-[color:var(--border)] hidden sm:block"></div>
-          <div className="text-xs font-medium text-[color:var(--text-3)] hidden sm:block truncate max-w-[120px] lg:max-w-none tracking-wide">
-            {selectedDemo ? selectedDemo.title : activeLabel}
+          
+          <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 text-[14px] font-medium text-[color:var(--text-2)]">
+              {selectedDemo ? (
+                <span className="truncate max-w-[120px]">{selectedDemo.title}</span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[color:var(--success)]"></span>
+                  {activeLabel}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="w-px h-5 bg-[color:var(--border)] mx-3"></div>
+
+          <div className="flex items-center gap-1">
+            <button className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[color:var(--bg-surface-2)] transition-colors">
+              <Search className="w-5 h-5 text-[color:var(--text-2)]" />
+            </button>
+            <button className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[color:var(--bg-surface-2)] transition-colors">
+              <Settings className="w-5 h-5 text-[color:var(--text-2)]" />
+            </button>
+            <div className="w-px h-5 bg-[color:var(--border)] mx-1"></div>
+            <button className="flex items-center justify-center w-8 h-8 rounded-full overflow-hidden hover:ring-2 hover:ring-[color:var(--primary)] hover:ring-offset-2 hover:ring-offset-[color:var(--bg-surface-1)] transition-all">
+              <img 
+                src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/ChatGPT%20Image%202025%E5%B9%B412%E6%9C%8825%E6%97%A5%2014_32_47%201.png" 
+                alt="用户头像" 
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </button>
           </div>
         </div>
       </header>
@@ -256,8 +333,8 @@ const App: React.FC = () => {
 
       {/* 移动端菜单面板 */}
       {isMobileMenuOpen && (
-        <div className="fixed top-14 right-0 left-0 bg-[color:var(--bg-surface-1)] border-b border-[color:var(--border)] z-50 lg:hidden shadow-xl">
-          <div className="p-4 space-y-2">
+        <div className="fixed top-14 right-0 left-0 bg-[color:var(--bg-surface-1)] border-b border-[color:var(--border)] z-50 lg:hidden shadow-xl animate-slideDown">
+          <div className="p-3 space-y-1.5">
             {apps.map(app => (
               <button
                 key={app.id}
@@ -272,7 +349,11 @@ const App: React.FC = () => {
                   setCurrentApp(app.id);
                   setIsMobileMenuOpen(false);
                 }}
-                className={`w-full ui-btn ui-btn-ghost px-4 h-12 gap-3 text-sm flex items-center justify-start ${currentApp === app.id ? 'bg-[color:var(--bg-surface-2)] text-[color:var(--text)] font-medium' : 'text-[color:var(--text-2)] font-normal hover:text-[color:var(--text)]'}`}
+                className={`w-full flex items-center gap-2.5 px-3.5 h-10 text-[13px] rounded-md transition-all duration-150 ${
+                  currentApp === app.id 
+                    ? 'bg-[color:var(--primary)]/10 text-[color:var(--primary)] font-medium' 
+                    : 'text-[color:var(--text-2)] font-normal hover:bg-[color:var(--bg-surface-2)]'
+                }`}
               >
                 {app.icon}
                 {app.name}
@@ -283,10 +364,13 @@ const App: React.FC = () => {
               href={AI_NAVIGATOR_URL}
               target="_blank"
               rel="noreferrer"
-              className="w-full ui-btn ui-btn-ghost px-4 h-12 gap-3 text-sm flex items-center justify-start text-[color:var(--text-2)] font-normal hover:text-[color:var(--text)]"
+              className="w-full flex items-center gap-2.5 px-3.5 h-10 text-[13px] rounded-md text-[color:var(--text-2)] font-normal hover:bg-[color:var(--bg-surface-2)] transition-all duration-150"
             >
-              <img src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/ChatGPT%20Image%202025%E5%B9%B412%E6%9C%8825%E6%97%A5%2014_36_28%201.png" alt="AI领航者" className="w-4 h-4 object-contain" />
+              <img src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/ChatGPT%20Image%202025%E5%B9%B412%E6%9C%8825%E6%97%A5%2014_36_28%201.png" alt="AI领航者" className="w-3.5 h-3.5 object-contain" />
               AI领航者
+              <svg className="w-3 h-3 ml-auto opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
             </a>
 
             {selectedDemo && (
@@ -295,8 +379,11 @@ const App: React.FC = () => {
                   handleReset();
                   setIsMobileMenuOpen(false);
                 }}
-                className="w-full ui-btn border border-[color:var(--border)] h-12 text-sm px-4 hover:bg-[color:var(--danger-subtle)] hover:text-[color:var(--danger)] hover:border-[color:var(--danger)] transition-all"
+                className="w-full flex items-center gap-2 h-10 text-[13px] px-3.5 border border-[color:var(--border)] rounded-md hover:bg-[color:var(--danger-subtle)] hover:text-[color:var(--danger)] hover:border-[color:var(--danger)] transition-all duration-150"
               >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
                 退出演示
               </button>
             )}
@@ -327,11 +414,54 @@ const App: React.FC = () => {
         ) : currentApp === 'home' ? (
           <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
             <div className="flex-1 overflow-y-auto no-scrollbar p-6 lg:p-8 pb-24 lg:pb-12">
-              <div className="max-w-6xl mx-auto space-y-8 lg:space-y-10">
-                <section className="ui-card overflow-hidden border border-[color:var(--border)] shadow-[var(--shadow-sm)]">
-                  <div className="px-6 py-8 sm:px-8 sm:py-10 lg:px-16 lg:py-16 relative overflow-hidden">
-                    <div className="max-w-3xl relative z-10">
-                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[color:var(--text)] tracking-tight leading-tight min-h-[3em]">
+              <div className="max-w-[1440px] mx-auto space-y-8 lg:space-y-10">
+                {/* Hero Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-auto lg:h-[320px]">
+                  {/* Left Steps */}
+                  <div className="lg:col-span-3 ui-card p-6 flex flex-col justify-between rounded-lg border border-[color:var(--border)] h-full">
+                    <div className="space-y-6">
+                      <div className="flex gap-4">
+                        <div className="flex flex-col items-center">
+                          <div className="w-6 h-6 rounded-full border border-[color:var(--primary)] text-[color:var(--primary)] flex items-center justify-center text-xs font-medium">1</div>
+                          <div className="w-px h-full bg-[color:var(--border)] my-1"></div>
+                        </div>
+                        <div>
+                          <h4 className="text-[14px] font-medium text-[color:var(--text)]">浏览行业方案</h4>
+                          <p className="text-[12px] text-[color:var(--text-2)] mt-1">探索不同行业的 AI 落地场景</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-4">
+                         <div className="flex flex-col items-center">
+                          <div className="w-6 h-6 rounded-full border border-[color:var(--border-strong)] text-[color:var(--text-3)] flex items-center justify-center text-xs font-medium">2</div>
+                          <div className="w-px h-full bg-[color:var(--border)] my-1"></div>
+                        </div>
+                        <div>
+                          <h4 className="text-[14px] font-medium text-[color:var(--text)]">体验数字伙伴</h4>
+                          <p className="text-[12px] text-[color:var(--text-2)] mt-1">与 AI 助手协作完成任务</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-4">
+                         <div className="flex flex-col items-center">
+                          <div className="w-6 h-6 rounded-full border border-[color:var(--border-strong)] text-[color:var(--text-3)] flex items-center justify-center text-xs font-medium">3</div>
+                        </div>
+                        <div>
+                          <h4 className="text-[14px] font-medium text-[color:var(--text)]">查看数据洞察</h4>
+                          <p className="text-[12px] text-[color:var(--text-2)] mt-1">基于 AI 分析的业务决策</p>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setCurrentApp('demo')}
+                      className="w-full ui-btn ui-btn-secondary h-9 text-[13px] justify-center font-medium rounded-md mt-4"
+                    >
+                      查看全部方案
+                    </button>
+                  </div>
+
+                  {/* Right Banner */}
+                  <div className="lg:col-span-9 ui-card overflow-hidden border border-[color:var(--border)] shadow-[var(--shadow-sm)] rounded-lg relative bg-gradient-to-br from-blue-50 to-white">
+                    <div className="px-8 py-10 relative z-10 h-full flex flex-col justify-center">
+                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-[color:var(--text)] tracking-tight leading-tight mb-4">
                         <TextType
                           text={['欢迎来到\n飞书 AI 解决方案样板间']}
                           typingSpeed={100}
@@ -340,218 +470,231 @@ const App: React.FC = () => {
                           showCursor={true}
                         />
                       </h2>
-                      <p className="mt-4 lg:mt-6 text-sm sm:text-base lg:text-lg text-[color:var(--text-2)] leading-relaxed max-w-2xl font-normal">
+                      <p className="text-base text-[color:var(--text-2)] leading-relaxed max-w-xl font-normal mb-8">
                         用最短路径把客户需求翻译成方案故事线：<br/>数据结构化 → AI 洞察 → 行动闭环。
                       </p>
-                      <div className="mt-6 sm:mt-8 lg:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:gap-4">
-                        <button
-                          onClick={() => setCurrentApp('demo')}
-                          className="ui-btn ui-btn-primary h-9 px-6 text-sm justify-center font-medium transition-transform active:scale-95 rounded-[var(--radius-lg)]"
-                        >
-                          开始探索
-                          <ArrowRight size={14} />
-                        </button>
-                        <button
-                          onClick={() => setCurrentApp('efficiency')}
-                          className="ui-btn ui-btn-secondary h-9 px-6 text-sm justify-center font-medium transition-colors rounded-[var(--radius-lg)]"
-                        >
-                          打开数字伙伴
-                        </button>
-                      </div>
+                      <button
+                        onClick={() => setCurrentApp('demo')}
+                        className="w-fit ui-btn ui-btn-primary h-10 px-6 text-[14px] justify-center font-medium transition-transform active:scale-95 rounded-md shadow-md hover:shadow-lg"
+                      >
+                        开始探索
+                        <ArrowRight size={14} />
+                      </button>
                     </div>
                     
                     {/* Decorative Image */}
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 h-[120%] w-[50%] hidden lg:flex items-center justify-center pointer-events-none z-0 opacity-80 mix-blend-normal">
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-12 h-[120%] w-[50%] hidden lg:flex items-center justify-center pointer-events-none z-0 opacity-90 mix-blend-multiply">
                       <img 
-                        src="https://raw.githubusercontent.com/xjjm123123123/my_imge/main/img/ChatGPT%20Image%202025%E5%B9%B412%E6%9C%8825%E6%97%A5%2000_09_48.png" 
-                        alt="" 
-                        className="max-w-full max-h-full object-contain transform scale-[1.15]"
+                        src="/images/Gemini_Generated_Image_bsrt5bbsrt5bbsrt.png" 
+                        alt="Feishu AI Solution" 
+                        className="max-w-full max-h-full object-contain transform scale-[1.1]"
                         loading="lazy"
                       />
                     </div>
                   </div>
+                </div>
+
+                {/* Quick Operation Section */}
+                <section>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-[14px] font-medium text-[color:var(--text)]">快速操作</h3>
+                    <button 
+                      onClick={() => setCurrentApp('efficiency')}
+                      className="flex items-center gap-1 text-[13px] text-[color:var(--text-2)] hover:text-[color:var(--text)] transition-colors"
+                    >
+                      查看全部
+                      <ArrowRight size={14} />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {EFFICIENCY_TOOLS.map((tool) => (
+                      <div
+                        key={tool.id}
+                        onClick={() => window.open(tool.url, '_blank')}
+                        className="flex items-center gap-3 p-3 bg-[color:var(--bg-surface-1)] border border-[color:var(--border)] rounded-lg hover:shadow-md hover:border-[color:var(--primary)] transition-all cursor-pointer group"
+                      >
+                        <div className="w-9 h-9 rounded-md bg-[color:var(--bg-surface-2)] flex items-center justify-center text-[color:var(--primary)] group-hover:bg-[color:var(--primary)] group-hover:text-white transition-colors">
+                          {tool.avatarUrl ? (
+                            <img src={tool.avatarUrl} alt="" className="w-5 h-5 object-contain" />
+                          ) : (
+                            <Zap size={18} />
+                          )}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-[13px] font-medium text-[color:var(--text)] truncate">{tool.title}</span>
+                          <span className="text-[11px] text-[color:var(--text-3)] truncate">{tool.name}</span>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="flex items-center gap-3 p-3 bg-[color:var(--bg-surface-1)] border border-dashed border-[color:var(--border)] rounded-lg hover:border-[color:var(--text-3)] transition-all cursor-default">
+                       <div className="w-9 h-9 rounded-md bg-[color:var(--bg-surface-2)] flex items-center justify-center text-[color:var(--text-3)]">
+                         <Plus size={18} />
+                       </div>
+                       <span className="text-[13px] text-[color:var(--text-3)]">更多工具</span>
+                    </div>
+                  </div>
                 </section>
 
+                {/* News Push (Demo List) */}
                 <section>
-                  <div className="flex items-center justify-between mb-4 sm:mb-5 lg:mb-6">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-[var(--radius-md)] bg-[color:var(--bg-surface-2)] border border-[color:var(--border)] flex items-center justify-center text-[color:var(--text)] shadow-sm">
-                        <Clock size={16} />
-                      </div>
-                      <h3 className="text-sm sm:text-base font-semibold text-[color:var(--text)] tracking-tight">最新 Demo</h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-[14px] font-medium text-[color:var(--text)]">最新方案</h3>
+                    <div className="flex gap-2">
+                       <button className="w-6 h-6 rounded-full border border-[color:var(--border)] flex items-center justify-center text-[color:var(--text-2)] hover:bg-[color:var(--bg-surface-2)]">
+                         <ChevronDown size={14} className="rotate-90" />
+                       </button>
+                       <button className="w-6 h-6 rounded-full border border-[color:var(--border)] flex items-center justify-center text-[color:var(--text-2)] hover:bg-[color:var(--bg-surface-2)]">
+                         <ChevronRight size={14} />
+                       </button>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {DEMO_LIST.map((demo) => (
                       <div
                         key={demo.id}
-                        role="button"
-                        tabIndex={0}
                         onClick={() => {
                           setWorkspaceInitialView('main');
                           setSelectedDemo(demo);
                           setCurrentApp('demo');
                           setDemoViewMode('flow');
                         }}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            setWorkspaceInitialView('main');
-                            setSelectedDemo(demo);
-                            setCurrentApp('demo');
-                            setDemoViewMode('flow');
-                          }
-                        }}
-                        className="ui-card group overflow-hidden text-left relative hover:shadow-[var(--shadow-lg)] transition-all duration-500 border-0 bg-[color:var(--bg-surface-1)] h-[280px] sm:h-[320px] flex flex-col rounded-[var(--radius-xl)] cursor-pointer"
+                        className="group cursor-pointer"
                       >
-                        <div className="absolute inset-0 z-0">
-                           {demo.cover ? (
-                            <img src={demo.cover} alt="" className="absolute inset-0 !w-full !h-full !max-w-none object-cover object-top transition-transform duration-700 group-hover:scale-105 block" loading="lazy" />
+                        <div className="aspect-video w-full rounded-lg overflow-hidden border border-[color:var(--border)] mb-3 relative">
+                          {demo.cover ? (
+                            <img src={demo.cover} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                           ) : (
-                            <div className="w-full h-full bg-[color:var(--bg-subtle)] flex items-center justify-center">
-                              <LayoutGrid size={16} />
+                            <div className="w-full h-full bg-[color:var(--bg-surface-2)] flex items-center justify-center text-[color:var(--text-3)]">
+                              <LayoutGrid size={24} />
                             </div>
                           )}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500" />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
                         </div>
-                        
-                        <div className="relative z-10 p-4 sm:p-6 flex flex-col h-full justify-end text-white">
-                          <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                            <div className="flex items-center gap-2 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
-                               <span className="px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-[10px] font-medium tracking-wide">
-                                 方案 Demo
-                               </span>
-                            </div>
-                            <h4 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2 text-white leading-tight shadow-sm">{demo.title}</h4>
-                            <p className="text-xs sm:text-sm text-white/80 line-clamp-2 leading-relaxed font-light mb-3 sm:mb-4 opacity-80 group-hover:opacity-100 transition-opacity">
-                              {demo.valueProp}
-                            </p>
-                            <div className="flex items-center gap-2 text-[10px] sm:text-xs font-medium text-white/90 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
-                              <span>进入体验</span>
-                              <ArrowRight size={14} />
-                            </div>
-                          </div>
-                        </div>
+                        <h4 className="text-[14px] font-medium text-[color:var(--text)] mb-1 truncate group-hover:text-[color:var(--primary)] transition-colors">{demo.title}</h4>
+                        <p className="text-[12px] text-[color:var(--text-3)] line-clamp-1">{demo.valueProp}</p>
                       </div>
                     ))}
-
-                    <div className="ui-card overflow-hidden text-left bg-[color:var(--bg-subtle)] border border-dashed border-[color:var(--border)] hover:border-[color:var(--text-3)] cursor-default flex flex-col justify-center items-center text-center p-6 sm:p-8 h-[280px] sm:h-[320px] backdrop-blur-sm transition-colors group rounded-[var(--radius-xl)]">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[color:var(--surface)] border border-[color:var(--border)] flex items-center justify-center text-[color:var(--text-3)] mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
-                        <LayoutGrid size={16} />
-                      </div>
-                      <h4 className="text-xs sm:text-sm font-medium text-[color:var(--text)] mb-2">更多 Demo 正在制作</h4>
-                      <p className="text-[10px] sm:text-xs text-[color:var(--text-3)] max-w-[200px] leading-relaxed">后续会持续补充更多行业与角色场景。</p>
-                    </div>
                   </div>
                 </section>
 
-                <section>
-                  <div className="flex items-center justify-between mb-5 sm:mb-6 lg:mb-8">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[color:var(--bg-subtle)] border border-[color:var(--border)] flex items-center justify-center text-[color:var(--text)] shadow-sm">
-                        <Zap size={16} />
+                {/* Bottom Split View */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-8">
+                  {/* Recently */}
+                  <div className="lg:col-span-8">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-[14px] font-medium text-[color:var(--text)]">最近访问</h3>
+                      <div className="flex items-center gap-2 text-[12px] text-[color:var(--text-2)] cursor-pointer hover:text-[color:var(--text)]">
+                        <span>全部类型</span>
+                        <ChevronDown size={12} />
                       </div>
-                      <h3 className="text-base sm:text-lg font-semibold text-[color:var(--text)] tracking-tight">最新数字伙伴</h3>
+                    </div>
+                    <div className="ui-card border border-[color:var(--border)] rounded-lg divide-y divide-[color:var(--border)]">
+                      {[
+                        { title: '智能巡检方案演示', type: 'Demo', time: '10分钟前', icon: <ScanLine size={16} /> },
+                        { title: '与"探探"进行了对话', type: 'Chat', time: '1小时前', icon: <MessageSquare size={16} /> },
+                        { title: '查看了"AI 智能巡检"工具', type: 'Tool', time: '昨天', icon: <Zap size={16} /> },
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center justify-between p-4 hover:bg-[color:var(--bg-surface-2)] transition-colors cursor-pointer">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded bg-[color:var(--bg-surface-2)] flex items-center justify-center text-[color:var(--primary)]">
+                              {item.icon}
+                            </div>
+                            <span className="text-[13px] text-[color:var(--text)]">{item.title}</span>
+                          </div>
+                          <span className="text-[12px] text-[color:var(--text-3)]">{item.time}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-                    {EFFICIENCY_TOOLS.map((tool) => (
-                      <div key={tool.id} className="ui-card overflow-hidden p-4 sm:p-5 lg:p-6 hover:border-[color:var(--border-strong)] hover:bg-[color:var(--bg-surface-2)] transition-all duration-300 group flex flex-col h-full items-start sm:items-center text-left sm:text-center rounded-[var(--radius-xl)]">
-                        <div className="flex flex-row sm:flex-col items-center gap-3 sm:gap-4 mb-3 sm:mb-4 w-full">
-                          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-[var(--radius-md)] bg-[color:var(--bg-surface-2)] border border-[color:var(--border)] flex items-center justify-center overflow-hidden flex-shrink-0">
-                             {tool.avatarUrl ? (
-                               <img src={tool.avatarUrl} alt={tool.name} className="w-full h-full object-cover" loading="lazy" />
-                             ) : (
-                               <Zap size={16} />
-                             )}
-                          </div>
-                          <div className="w-full px-2 flex-1">
-                             <h3 className="text-sm sm:text-base font-semibold text-[color:var(--text)] truncate w-full">{tool.title}</h3>
-                             <span className="text-[10px] sm:text-xs text-[color:var(--text-2)] block truncate w-full">{tool.name}</span>
-                          </div>
+                  {/* Related Applications */}
+                  <div className="lg:col-span-4">
+                     <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-[14px] font-medium text-[color:var(--text)]">相关应用</h3>
+                    </div>
+                    <div className="ui-card border border-[color:var(--border)] rounded-lg p-2">
+                      {[
+                        { name: '飞书文档', desc: '高效创作与协作', icon: '📝' },
+                        { name: '飞书多维表格', desc: '新一代业务系统', icon: '📊' },
+                        { name: '飞书妙记', desc: '智能会议纪要', icon: '🎙️' },
+                      ].map((app, i) => (
+                        <div key={i} className="flex items-center gap-3 p-3 hover:bg-[color:var(--bg-surface-2)] rounded-md cursor-pointer transition-colors">
+                           <div className="w-8 h-8 flex items-center justify-center text-xl">{app.icon}</div>
+                           <div>
+                             <h4 className="text-[13px] font-medium text-[color:var(--text)]">{app.name}</h4>
+                             <p className="text-[11px] text-[color:var(--text-3)]">{app.desc}</p>
+                           </div>
                         </div>
-                        
-                        <div className="bg-[color:var(--bg-surface-2)] rounded-[var(--radius-md)] p-2.5 sm:p-3 border border-[color:var(--border)] text-[10px] sm:text-xs text-[color:var(--text-2)] leading-relaxed mb-3 sm:mb-4 flex-grow w-full break-words">
-                          "{tool.highlight}"
-                        </div>
-
-                        <div className="flex flex-wrap items-center justify-start sm:justify-center mt-auto w-full gap-2 sm:gap-3">
-                           <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-start sm:justify-center max-w-full">
-                            {tool.skills.slice(0, 1).map((s) => (
-                              <span key={s} className="px-1.5 py-0.5 rounded border border-[color:var(--border)] bg-[color:var(--bg-surface-1)] text-[10px] text-[color:var(--text-2)] truncate max-w-[80px] sm:max-w-[100px]">
-                                {s}
-                              </span>
-                            ))}
-                          </div>
-                          <a
-                            href={tool.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="ui-btn ui-btn-primary px-3 h-8 text-xs flex-shrink-0 sm:px-5 sm:h-9 sm:text-sm rounded-[var(--radius-lg)]"
-                          >
-                            打开
-                          </a>
-                        </div>
-                      </div>
-                    ))}
-
-                    <div className="ui-card overflow-hidden text-left bg-[color:var(--bg-subtle)] border border-dashed border-[color:var(--border)] hover:border-[color:var(--text-3)] cursor-default flex flex-col justify-center items-center text-center p-6 sm:p-8 h-full min-h-[180px] sm:min-h-[200px] backdrop-blur-sm transition-colors group rounded-[var(--radius-xl)]">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[color:var(--surface)] border border-[color:var(--border)] flex items-center justify-center text-[color:var(--text-3)] mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
-                        <Zap size={16} />
-                      </div>
-                      <h4 className="text-xs sm:text-sm font-medium text-[color:var(--text)] mb-2">更多数字伙伴敬请期待</h4>
-                      <p className="text-[10px] sm:text-xs text-[color:var(--text-3)] max-w-[200px] leading-relaxed">持续补充更多场景助手。</p>
+                      ))}
                     </div>
                   </div>
-                </section>
+                </div>
 
-                <BottomToolbar onNavigate={handleToolbarNavigate} />
+                {/* <BottomToolbar onNavigate={handleToolbarNavigate} /> */}
               </div>
             </div>
 
             <aside
-              className={`lg:w-[360px] lg:h-auto flex flex-col flex-shrink-0 z-40 lg:relative fixed top-[64px] lg:top-auto lg:right-auto lg:left-auto bottom-auto transition-all duration-300 ease-in-out backdrop-blur-xl ${
+              className={`lg:w-[320px] lg:h-auto flex flex-col flex-shrink-0 z-40 lg:relative fixed top-[56px] lg:top-auto lg:right-auto lg:left-auto bottom-auto transition-all duration-300 ease-in-out backdrop-blur-xl ${
                 isHomeChatCollapsed
                   ? 'w-10 h-10 rounded-full right-4 left-auto bg-[color:var(--primary)] shadow-lg border-0 items-center justify-center overflow-hidden'
-                  : 'w-[calc(100%-32px)] h-[400px] right-4 left-4 rounded-2xl bg-[color:var(--bg-surface-1)] shadow-[var(--shadow-xl)] border border-[color:var(--border)]'
+                  : 'w-[calc(100%-32px)] h-[360px] right-4 left-4 rounded-2xl bg-[color:var(--bg-surface-1)] shadow-[var(--shadow-xl)] border border-[color:var(--border)]'
               } lg:bg-transparent lg:shadow-[var(--shadow-xl)] lg:border lg:border-t-0 lg:border-l lg:border-[color:var(--border)] lg:rounded-none lg:items-stretch lg:justify-start lg:overflow-visible ui-card`}
             >
-              <div className={`h-12 lg:h-16 border-b border-[color:var(--border)] flex items-center justify-between px-4 lg:px-6 bg-transparent flex-shrink-0 ${isHomeChatCollapsed ? 'border-0 p-0 justify-center w-full h-full' : ''}`}>
+              <div className={`h-11 lg:h-12 border-b border-[color:var(--border)] flex items-center justify-between px-3.5 lg:px-4 bg-transparent flex-shrink-0 ${isHomeChatCollapsed ? 'border-0 p-0 justify-center w-full h-full' : ''}`}>
                 <button
                   type="button"
                   onClick={() => setIsHomeChatCollapsed((v) => !v)}
-                  className={`flex items-center gap-2 text-sm font-bold text-[color:var(--text)] min-w-0 lg:pointer-events-none w-full lg:w-auto ${isHomeChatCollapsed ? 'justify-center h-full text-white' : ''}`}
+                  className={`flex items-center gap-2 text-[13px] font-medium text-[color:var(--text)] min-w-0 lg:pointer-events-none w-full lg:w-auto ${isHomeChatCollapsed ? 'justify-center h-full text-white' : ''}`}
                   aria-label={isHomeChatCollapsed ? '展开首页 AI 助手' : '折叠首页 AI 助手'}
                 >
-                  <div className={`w-6 h-6 rounded-[var(--radius-sm)] flex items-center justify-center shadow-sm flex-shrink-0 ${isHomeChatCollapsed ? 'bg-transparent text-white shadow-none' : 'bg-[color:var(--primary)] text-white'}`}>
-                    <Zap size={14} />
+                  <div className={`w-5 h-5 rounded-md flex items-center justify-center shadow-sm flex-shrink-0 ${isHomeChatCollapsed ? 'bg-transparent text-white shadow-none' : 'bg-[color:var(--primary)] text-white'}`}>
+                    <Zap size={12} />
                   </div>
                   <span className={`flex-1 text-left ${isHomeChatCollapsed ? 'hidden lg:block' : 'block'}`}>首页 AI 助手</span>
-                  <ChevronDown size={16} className={`lg:hidden transition-transform ${isHomeChatCollapsed ? 'hidden' : 'rotate-180'}`} />
+                  <ChevronDown size={14} className={`lg:hidden transition-transform ${isHomeChatCollapsed ? 'hidden' : 'rotate-180'}`} />
                 </button>
               </div>
 
-              <div className={`flex-1 overflow-y-auto no-scrollbar p-4 lg:p-6 space-y-4 bg-transparent ${isHomeChatCollapsed ? 'hidden lg:block' : ''}`}>
+              <div className={`flex-1 overflow-y-auto no-scrollbar p-3.5 lg:p-4 space-y-3 bg-transparent ${isHomeChatCollapsed ? 'hidden lg:block' : ''}`}>
                 {homeMessages.map((m, idx) => (
-                  <div key={idx} className="flex flex-col gap-2">
+                  <div key={idx} className="flex flex-col gap-1.5">
                     <div className={`flex ${m.role === 'ai' ? 'justify-start' : 'justify-end'}`}>
-                      <div className={`max-w-[90%] p-3 lg:p-4 rounded-[var(--radius-xl)] text-xs lg:text-sm leading-relaxed border shadow-[var(--shadow-sm)] ${m.role === 'ai' ? 'bg-[color:var(--surface)]/80 border-[color:var(--border)] text-[color:var(--text)] backdrop-blur-md' : 'bg-[color:var(--primary)] border-transparent text-white'}`}>
-                        {m.text}
+                      <div className={`max-w-[90%] p-2.5 lg:p-3 rounded-lg text-[12px] lg:text-[13px] leading-relaxed border shadow-[var(--shadow-sm)] ${m.role === 'ai' ? 'bg-[color:var(--surface)]/80 border-[color:var(--border)] text-[color:var(--text)] backdrop-blur-md' : 'bg-[color:var(--primary)] border-transparent text-white'}`}>
+                        {m.role === 'ai' ? (
+                          <div dangerouslySetInnerHTML={{ __html: renderRichText(m.text) }} />
+                        ) : (
+                          m.text
+                        )}
                       </div>
                     </div>
                     {idx === 0 && m.role === 'ai' && (
-                      <div className="flex flex-wrap gap-2 ml-1">
-                        <button onClick={() => setHomeInput('探探')} className="ui-btn ui-btn-secondary h-7 lg:h-8 px-3 lg:px-4 text-[10px] lg:text-xs rounded-full border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] shadow-sm transition-all">探探</button>
-                        <button onClick={() => setHomeInput('睿睿')} className="ui-btn ui-btn-secondary h-7 lg:h-8 px-3 lg:px-4 text-[10px] lg:text-xs rounded-full border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] shadow-sm transition-all">睿睿</button>
-                        <button onClick={() => setHomeInput('巡检')} className="ui-btn ui-btn-secondary h-7 lg:h-8 px-3 lg:px-4 text-[10px] lg:text-xs rounded-full border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] shadow-sm transition-all">巡检</button>
+                      <div className="flex flex-wrap gap-1.5 ml-1">
+                        <button onClick={() => setHomeInput('探探')} className="ui-btn ui-btn-secondary h-6 lg:h-7 px-2.5 lg:px-3 text-[11px] lg:text-xs rounded-full border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] shadow-sm transition-all">探探</button>
+                        <button onClick={() => setHomeInput('睿睿')} className="ui-btn ui-btn-secondary h-6 lg:h-7 px-2.5 lg:px-3 text-[11px] lg:text-xs rounded-full border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] shadow-sm transition-all">睿睿</button>
+                        <button onClick={() => setHomeInput('巡检')} className="ui-btn ui-btn-secondary h-6 lg:h-7 px-2.5 lg:px-3 text-[11px] lg:text-xs rounded-full border-[color:var(--border)] bg-[color:var(--bg-surface-1)] hover:bg-[color:var(--bg-surface-2)] shadow-sm transition-all">巡检</button>
                       </div>
                     )}
                   </div>
                 ))}
+                {isHomeChatLoading && (
+                  <div className="flex justify-start">
+                    <div className="max-w-[90%] p-2.5 lg:p-3 rounded-lg border bg-[color:var(--surface)]/80 border-[color:var(--border)] backdrop-blur-md">
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          <span className="w-1.5 h-1.5 bg-[color:var(--text-3)] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                          <span className="w-1.5 h-1.5 bg-[color:var(--text-3)] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                          <span className="w-1.5 h-1.5 bg-[color:var(--text-3)] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                        </div>
+                        <span className="text-[11px] text-[color:var(--text-3)]">AI 正在思考...</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              <div className={`p-3 lg:p-6 border-t border-[color:var(--border)] bg-transparent flex-shrink-0 ${isHomeChatCollapsed ? 'hidden lg:block' : ''}`}>
+              <div className={`p-3 lg:p-4 border-t border-[color:var(--border)] bg-transparent flex-shrink-0 ${isHomeChatCollapsed ? 'hidden lg:block' : ''}`}>
                 <div className="relative w-full flex flex-col lg:block gap-2 lg:gap-0">
                   <input
                     value={homeInput}
@@ -560,14 +703,14 @@ const App: React.FC = () => {
                       if (e.key === 'Enter') sendHomeMessage();
                     }}
                     placeholder="输入你的问题…"
-                    className="ui-input w-full pl-4 pr-4 lg:pr-12 h-10 lg:h-11 text-xs lg:text-sm rounded-full bg-[color:var(--bg-surface-2)] border-transparent focus:bg-[color:var(--bg-surface-1)] focus:border-[color:var(--primary)] transition-all shadow-inner"
+                    className="ui-input w-full pl-3.5 pr-3.5 lg:pr-10 h-9 lg:h-10 text-[12px] lg:text-sm rounded-full bg-[color:var(--bg-surface-2)] border-transparent focus:bg-[color:var(--bg-surface-1)] focus:border-[color:var(--primary)] transition-all shadow-inner"
                   />
                   <div className="flex justify-end lg:block">
                     <button
                       onClick={sendHomeMessage}
-                      className="static lg:absolute lg:right-1 lg:top-1/2 lg:-translate-y-1/2 w-8 h-8 flex items-center justify-center bg-[color:var(--primary)] text-white rounded-full shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all"
+                      className="static lg:absolute lg:right-1 lg:top-1/2 lg:-translate-y-1/2 w-7 h-7 flex items-center justify-center bg-[color:var(--primary)] text-white rounded-full shadow-sm hover:shadow-md hover:scale-105 active:scale-95 transition-all"
                     >
-                      <Send size={14} />
+                      <Send size={12} />
                     </button>
                   </div>
                 </div>
