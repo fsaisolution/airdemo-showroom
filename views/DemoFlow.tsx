@@ -243,7 +243,7 @@ const DemoFlow: React.FC<DemoFlowProps> = ({ demo, onEnterApp }) => {
     return { nodes: positionedNodes, edges: sequentialEdges, containerWidth, containerHeight, cardWidth: CARD_WIDTH, cardHeight: CARD_HEIGHT };
   }, [demo.id, demo.steps, defaultNodes, inspectionFlow]);
 
-  const nodeById = useMemo(() => new Map(nodes.map(n => [n.id, n])), [nodes]);
+  const nodeById = useMemo(() => new Map(nodes.map(n => [n.id, n] as const)), [nodes]);
 
   return (
     <div className="flex-1 flex h-full bg-[color:var(--bg-body)] overflow-hidden relative font-sans">
@@ -323,7 +323,7 @@ const DemoFlow: React.FC<DemoFlowProps> = ({ demo, onEnterApp }) => {
              onClick={() => setIsRightPanelOpen(true)}
              className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20"
            >
-             <Button type="secondary" size="medium">
+             <Button type="outlined" size="medium">
                打开流程说明
              </Button>
            </button>
@@ -413,7 +413,7 @@ const DemoFlow: React.FC<DemoFlowProps> = ({ demo, onEnterApp }) => {
              点击即可进入应用模式体验真实交互
            </p>
            <Button
-             type="secondary"
+             type="outlined"
              size="medium"
              block
              onClick={() => setIsRightPanelOpen(false)}

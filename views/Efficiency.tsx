@@ -79,7 +79,7 @@ const Efficiency: React.FC = () => {
                   <div className="flex items-center justify-between gap-2 pt-2 border-t border-[color:var(--border-subtle)]">
                     <div className="flex gap-2">
                       <Button
-                        type="secondary"
+                        type="outlined"
                         size="small"
                         href={tool.docUrl}
                         target="_blank"
@@ -88,7 +88,7 @@ const Efficiency: React.FC = () => {
                         文档
                       </Button>
                       <Button
-                        type="secondary"
+                        type="outlined"
                         size="small"
                         href={tool.videoUrl}
                         target="_blank"
