@@ -27,4 +27,4 @@ dist-ssr
 
 # Secrets and Scripts with credentials
 *secret.yaml
-*.cjs
+/*.cjs
