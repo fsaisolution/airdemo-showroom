@@ -36,30 +36,34 @@ jobs:
           PACKAGES=("@esbuild/linux-x64" "@rollup/rollup-linux-x64-gnu")
           
           for PKG in "${PACKAGES[@]}"; do
-            # Extract base name (esbuild or rollup)
-            BASE_NAME=$(echo $PKG | cut -d'/' -f2 | cut -d'-' -f1)
-            
             # Get version from local node_modules
-            VERSION=$(node -p "require('./node_modules/$BASE_NAME/package.json').version")
-            echo "Detected $BASE_NAME version: $VERSION, downloading $PKG..."
+            if [[ "$PKG" == *"esbuild"* ]]; then
+              VERSION=$(node -p "require('./node_modules/esbuild/package.json').version")
+              TARBALL_NAME="linux-x64-${VERSION}.tgz"
+            else
+              VERSION=$(node -p "require('./node_modules/rollup/package.json').version")
+              TARBALL_NAME="rollup-linux-x64-gnu-${VERSION}.tgz"
+            fi
             
-            # Create target directory
+            echo "Detected version: $VERSION, downloading $PKG..."
+            
+            # Clean and create target directory
+            rm -rf "node_modules/$PKG"
             mkdir -p "node_modules/$PKG"
             
             # Download and extract from npm registry
-            if [ "$BASE_NAME" = "esbuild" ]; then
-              curl -sL "https://registry.npmjs.org/$PKG/-/linux-x64-$VERSION.tgz" | tar -xz -C "node_modules/$PKG" --strip-components=1
-            else
-              curl -sL "https://registry.npmjs.org/$PKG/-/rollup-linux-x64-gnu-$VERSION.tgz" | tar -xz -C "node_modules/$PKG" --strip-components=1
-            fi
+            curl -sL "https://registry.npmjs.org/$PKG/-/$TARBALL_NAME" | tar -xz -C "node_modules/$PKG" --strip-components=1
             
-            if [ $? -eq 0 ]; then
+            if [ ${PIPESTATUS[0]} -eq 0 ]; then
               echo "✅ $PKG@$VERSION installed successfully"
             else
-              echo "❌ Failed to install $PKG"
+              echo "❌ Failed to download $PKG"
               exit 1
             fi
           done
+          
+          # Ensure execute permissions
+          chmod +x node_modules/@esbuild/linux-x64/bin/esbuild 2>/dev/null || true
       - run: npm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
