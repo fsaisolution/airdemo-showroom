@@ -26,6 +26,8 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Install Linux native dependencies
+        run: npm install @rollup/rollup-linux-x64-gnu --no-save --ignore-scripts || true
       - run: npm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
