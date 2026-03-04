@@ -28,26 +28,38 @@ jobs:
           enablement: true
       - name: Replace native modules for Linux
         run: |
-          # Remove macOS native modules
-          rm -rf node_modules/@esbuild/darwin-arm64
-          rm -rf node_modules/@rollup/rollup-darwin-arm64
-          rm -rf node_modules/@rollup/rollup-linux-x64-gnu 2>/dev/null || true
+          # Remove macOS native modules first
+          rm -rf node_modules/@esbuild/darwin-arm64 2>/dev/null || true
+          rm -rf node_modules/@rollup/rollup-darwin-arm64 2>/dev/null || true
           
-          # Download Linux native modules from npm registry
-          mkdir -p node_modules/@esbuild
-          mkdir -p node_modules/@rollup
+          # Define packages to patch
+          PACKAGES=("@esbuild/linux-x64" "@rollup/rollup-linux-x64-gnu")
           
-          # esbuild for Linux
-          curl -L -o esbuild.tgz https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.25.0.tgz
-          tar -xzf esbuild.tgz
-          mv package node_modules/@esbuild/linux-x64
-          rm -rf package esbuild.tgz
-          
-          # rollup for Linux
-          curl -L -o rollup.tgz https://registry.npmjs.org/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.34.9.tgz
-          tar -xzf rollup.tgz
-          mv package node_modules/@rollup/rollup-linux-x64-gnu
-          rm -rf package rollup.tgz
+          for PKG in "${PACKAGES[@]}"; do
+            # Extract base name (esbuild or rollup)
+            BASE_NAME=$(echo $PKG | cut -d'/' -f2 | cut -d'-' -f1)
+            
+            # Get version from local node_modules
+            VERSION=$(node -p "require('./node_modules/$BASE_NAME/package.json').version")
+            echo "Detected $BASE_NAME version: $VERSION, downloading $PKG..."
+            
+            # Create target directory
+            mkdir -p "node_modules/$PKG"
+            
+            # Download and extract from npm registry
+            if [ "$BASE_NAME" = "esbuild" ]; then
+              curl -sL "https://registry.npmjs.org/$PKG/-/linux-x64-$VERSION.tgz" | tar -xz -C "node_modules/$PKG" --strip-components=1
+            else
+              curl -sL "https://registry.npmjs.org/$PKG/-/rollup-linux-x64-gnu-$VERSION.tgz" | tar -xz -C "node_modules/$PKG" --strip-components=1
+            fi
+            
+            if [ $? -eq 0 ]; then
+              echo "✅ $PKG@$VERSION installed successfully"
+            else
+              echo "❌ Failed to install $PKG"
+              exit 1
+            fi
+          done
       - run: npm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
