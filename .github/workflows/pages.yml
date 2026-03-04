@@ -26,8 +26,17 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Install Linux native dependencies
-        run: npm install @rollup/rollup-linux-x64-gnu --no-save --ignore-scripts || true
+      - name: Install Linux native Rollup
+        run: |
+          cd node_modules
+          if [ ! -d "@rollup" ]; then mkdir -p "@rollup"; fi
+          cd "@rollup"
+          if [ ! -d "rollup-linux-x64-gnu" ]; then
+            curl -L -o rollup-linux-x64-gnu.tgz https://registry.npmjs.org/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.34.9.tgz
+            tar -xzf rollup-linux-x64-gnu.tgz
+            mv package rollup-linux-x64-gnu
+            rm rollup-linux-x64-gnu.tgz
+          fi
       - run: npm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
